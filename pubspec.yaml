@@ -36,8 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_staggered_grid_view: ^0.7.0
   responsive_framework: ^1.5.1
-  
-
+  skeletonizer: ^1.4.3
+  dartz: ^0.10.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/blur/blur.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/gradient_effect.dart';
 import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 const _radius = BorderRadius.all(Radius.circular(10));
 
@@ -21,8 +24,6 @@ class PortadaItem extends StatelessWidget {
   final PortadaModel portada;
   
   const PortadaItem({super.key, required this.portada});
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +69,42 @@ class PortadaItem extends StatelessWidget {
               ),  
             ),
           )
+        )
+      ),
+    );
+  }
+}
+
+
+class PortadaItemSkeleton extends StatelessWidget {
+  static final Random _random = Random();
+
+  const PortadaItemSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: _radius,
+      child: ColoredBox(color: Colors.red,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: List.generate(_random.nextInt(3) + 1, (i)=> Bone.square(
+                borderRadius: BorderRadius.circular(10),size: 20,
+              )),
+            ),
+            Wrap(
+              spacing: 2,
+              runSpacing: 2,
+              children: List.generate(4, (i)=> Bone(
+                  borderRadius: BorderRadius.circular(10),
+                  width: _random.nextInt(150) + 50,
+                  height: 20,
+                )
+              )
+            ),
+          ],
         )
       ),
     );

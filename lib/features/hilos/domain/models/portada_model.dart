@@ -23,7 +23,6 @@ class MiniaturaModel {
   const MiniaturaModel({required this.url, required this.spoiler});
 }
  
-
 class Banderas {
 final bool esSticky;
  final bool tieneEncuesta;

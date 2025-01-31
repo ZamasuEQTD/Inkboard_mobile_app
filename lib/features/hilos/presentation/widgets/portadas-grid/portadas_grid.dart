@@ -5,11 +5,11 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../domain/models/portada_model.dart';
 
-typedef PortadaItemBuilder = Widget Function(PortadaItem portada);
+typedef PortadaItemBuilder = Widget Function(PortadaItem child);
 
 class PortadaGrid extends StatelessWidget {
   
-  static Widget skeleton = Container();
+  static Widget skeleton = PortadaItemSkeleton();
 
   final List<PortadaModel> portadas;
   final bool cargando;
@@ -21,7 +21,7 @@ class PortadaGrid extends StatelessWidget {
 
     return SliverGrid.builder(
       gridDelegate: delegate(context),
-      itemCount: portadas.length + (cargando? 5 : 0),
+      itemCount: portadas.length + (cargando? 10 : 0),
       itemBuilder: (context, index) {
 
         if(index > portadas.length - 1){
