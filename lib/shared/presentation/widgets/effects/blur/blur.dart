@@ -16,15 +16,13 @@ class Blur extends StatelessWidget {
     Widget child = this.child;
 
     if (blurear) {
-      child = ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 30,
-            sigmaY: 25,
-            tileMode: TileMode.decal,
-          ),
-          child: child,
+      child = BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 9,
+          sigmaY: 9,
+          tileMode: TileMode.decal
         ),
+        child: child,
       );
     }
 

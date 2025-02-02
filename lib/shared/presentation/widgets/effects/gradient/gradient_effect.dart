@@ -16,8 +16,9 @@ class GradientEffectWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
+    return SizedBox.expand(
       child: DecoratedBox(
+        
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: colors,

@@ -12,10 +12,10 @@ const _radius = BorderRadius.all(Radius.circular(10));
 
 class PortadaItem extends StatelessWidget {
   static const _gradient = [
-    Colors.black45,
+    Colors.black87,
     Colors.transparent,
     Colors.transparent,
-    Colors.black45,
+    Colors.black87,
   ];
 
   static const _stops = [0.0, 0.3, 0.6, 1.0];
@@ -80,10 +80,11 @@ class PortadaItem extends StatelessWidget {
                             portada.titulo,
                             maxLines: 2,
                             style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20,
-                                overflow: TextOverflow.ellipsis,
-                                color: Colors.white),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              overflow: TextOverflow.ellipsis,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -140,9 +141,15 @@ class TagPortadaIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tag(
-        padding: EdgeInsets.all(2),
-        background: background ?? Colors.blue,
-        child: icon);
+    return SizedBox.square(
+      dimension: 24,
+      child: FittedBox(
+        child: Tag(
+          padding: EdgeInsets.all(2),
+          background: background ?? Colors.blue,
+          child: icon,
+        ),
+      ),
+    );
   }
 }

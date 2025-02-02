@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomScrollView(
+      body: CustomScrollView(
       slivers: [
         SliverAppBar(title: Text("Inkboard"), actions: [
           IconButton(
@@ -30,9 +30,8 @@ class HomePage extends StatelessWidget {
                 subcategoria: "NSFW",
                 esNuevo: true,
                 miniatura: MiniaturaModel(
-                  url:
-                      "https://static.wikia.nocookie.net/dragonball/images/c/c0/Son_Goku_en_Super_Hero.png/revision/latest?cb=20220302091733&path-prefix=es",
-                  spoiler: false,
+                  url:"https://static1.dualshockersimages.com/wordpress/wp-content/uploads/2019/11/angela-and-the-knifepng.jpeg",
+                  spoiler: true,
                 ),
                 banderas: Banderas(
                   esSticky: true,
