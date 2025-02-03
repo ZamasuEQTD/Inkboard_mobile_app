@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:inkboard/features/core/presentation/utils/breakpoints.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/portada/portada.dart';
@@ -15,13 +13,17 @@ class PortadaGrid extends StatelessWidget {
   final List<PortadaModel> portadas;
   final bool cargando;
   final PortadaItemBuilder? builder;
-  const PortadaGrid(
-      {super.key, required this.portadas, this.cargando = false, this.builder});
+  const PortadaGrid({
+    super.key,
+    required this.portadas,
+    this.cargando = false,
+    this.builder,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
         return SliverGrid.builder(
           gridDelegate: delegate(context),
           itemCount: portadas.length + (cargando ? 10 : 0),

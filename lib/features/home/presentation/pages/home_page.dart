@@ -7,46 +7,81 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-      slivers: [
-        SliverAppBar(title: Text("Inkboard"), actions: [
-          IconButton(
-            onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: SizedBox.square(
-              dimension: 40,
-              child: Icon(Icons.menu),
-            ),
-          )
-        ]),
-        SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: 4),
-          sliver: PortadaGrid(
-            portadas: List.generate(
-              200,
-              (index) => PortadaModel(
-                id: "id",
-                titulo: "titulo",
-                subcategoria: "NSFW",
-                esNuevo: true,
-                miniatura: MiniaturaModel(
-                  url:"https://static1.dualshockersimages.com/wordpress/wp-content/uploads/2019/11/angela-and-the-knifepng.jpeg",
-                  spoiler: true,
+    return Stack(
+      children: [
+        Scaffold(
+            body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+                pinned: true,
+                title: Text(
+                  "Inkboard",
+                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
                 ),
-                banderas: Banderas(
-                  esSticky: true,
-                  tieneEncuesta: true,
-                  dadosActivado: true,
-                  idUnicoActivado: true,
+                actions: [
+                  Builder(
+                    builder: (context) => IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: SizedBox.square(
+                        dimension: 40,
+                        child: Icon(Icons.menu),
+                      ),
+                    ),
+                  )
+                ]),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              sliver: PortadaGrid(
+                cargando: true,
+                portadas: List.generate(
+                  200,
+                  (index) => PortadaModel(
+                    id: "id",
+                    titulo:
+                        "titulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulotitulov",
+                    subcategoria: "NSFW",
+                    esNuevo: true,
+                    miniatura: MiniaturaModel(
+                      url:
+                          "https://static1.dualshockersimages.com/wordpress/wp-content/uploads/2019/11/angela-and-the-knifepng.jpeg",
+                      spoiler: true,
+                    ),
+                    banderas: Banderas(
+                      esSticky: true,
+                      tieneEncuesta: true,
+                      dadosActivado: true,
+                      idUnicoActivado: true,
+                    ),
+                  ),
+                ),
+                builder: (child) => MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    child: child,
+                  ),
                 ),
               ),
+            )
+          ],
+        )),
+
+        //postear  hilo button
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: IconButton(
+            style: ButtonStyle(
+              fixedSize: WidgetStatePropertyAll(Size.square(50)),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              backgroundColor: WidgetStatePropertyAll(Colors.grey.shade900),
             ),
-            builder: (child) => GestureDetector(
-              child: child,
-            ),
+            onPressed: () {},
+            icon: Icon(Icons.add, color: Colors.white, size: 25),
           ),
         )
       ],
-    ));
+    );
   }
 }

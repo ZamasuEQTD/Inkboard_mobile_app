@@ -101,33 +101,47 @@ class PortadaItemSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: _radius,
-      child: ColoredBox(
-          color: Colors.red,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: List.generate(
-                    _random.nextInt(3) + 1,
-                    (i) => Bone.square(
-                          borderRadius: BorderRadius.circular(10),
-                          size: 20,
-                        )),
-              ),
-              Wrap(
-                  spacing: 2,
-                  runSpacing: 2,
-                  children: List.generate(
-                      4,
+    return Skeletonizer(
+      effect: ShimmerEffect(
+        baseColor: Colors.white,
+        highlightColor: Colors.grey.shade100,
+      ),
+      child: ClipRRect(
+        borderRadius: _radius,
+        child: ColoredBox(
+            color: Colors.grey.shade200,
+            child: Padding(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    runSpacing: 4,
+                    spacing: 4,
+                    children: List.generate(
+                        _random.nextInt(3) + 1,
+                        (i) => Bone.square(
+                              borderRadius: BorderRadius.circular(10),
+                              size: 30,
+                            )),
+                  ),
+                  Wrap(
+                    spacing: 2,
+                    runSpacing: 2,
+                    children: List.generate(
+                      3,
                       (i) => Bone(
-                            borderRadius: BorderRadius.circular(10),
-                            width: _random.nextInt(150) + 50,
-                            height: 20,
-                          ))),
-            ],
-          )),
+                        borderRadius: BorderRadius.circular(10),
+                        width: _random.nextInt(150) + 50,
+                        height: 24,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

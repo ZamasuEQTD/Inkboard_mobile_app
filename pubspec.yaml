@@ -38,6 +38,7 @@ dependencies:
   responsive_framework: ^1.5.1
   skeletonizer: ^1.4.3
   dartz: ^0.10.0
+  google_fonts: ^6.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
