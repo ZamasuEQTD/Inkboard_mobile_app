@@ -8,7 +8,7 @@ import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-const _radius = BorderRadius.all(Radius.circular(10));
+const _radius = BorderRadius.all(Radius.circular(4));
 
 class PortadaItem extends StatelessWidget {
   static const _gradient = [
@@ -51,14 +51,20 @@ class PortadaItem extends StatelessWidget {
                               Tag.text(
                                 portada.subcategoria,
                                 background: Colors.red,
-                                padding: EdgeInsets.all(2),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 4,
+                                ),
                                 style: TextStyle(color: Colors.white),
                               ),
                               if (portada.esNuevo)
                                 Tag.text(
                                   "Nuevo",
                                   background: Colors.blue,
-                                  padding: EdgeInsets.all(2),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 4,
+                                  ),
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ...[

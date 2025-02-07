@@ -47,10 +47,11 @@ class PortadaGrid extends StatelessWidget {
 
   SliverGridDelegate delegate(BuildContext context) =>
       SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: _columns(context),
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
-          mainAxisExtent: _extent(context));
+        crossAxisCount: _columns(context),
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        mainAxisExtent: _extent(context),
+      );
 
   int _columns(BuildContext context) {
     for (var i = 0; i < Breakpoints.breakpoints.length; i++) {

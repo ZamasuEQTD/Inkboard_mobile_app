@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/portadas-grid/portadas_grid.dart';
+import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -77,7 +78,10 @@ class HomePage extends StatelessWidget {
               ),
               backgroundColor: WidgetStatePropertyAll(Colors.grey.shade900),
             ),
-            onPressed: () {},
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => PostearHiloDialog(),
+            ),
             icon: Icon(Icons.add, color: Colors.white, size: 25),
           ),
         )
