@@ -71,7 +71,7 @@ class PortadaItem extends StatelessWidget {
                                 if (portada.banderas.esSticky)
                                   TagPortadaIcon(
                                     icon: Icon(Icons.sticky_note_2),
-                                    background: Colors.amber,
+                                    background: Colors.amber.shade700,
                                   ),
                                 if (portada.banderas.dadosActivado)
                                   TagPortadaIcon(icon: Icon(Icons.casino)),
