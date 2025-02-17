@@ -27,10 +27,17 @@ class EncuestaOpcionTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: "Opcion ${index + 1}",
         suffixIcon: IconButton(
-          color: Colors.red.shade500,
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              Colors.transparent,
+            ),
+          ),
           onPressed: () => onDelete(index),
-          icon: Icon(Icons.delete_outline),
-        ),
+          icon: Icon(
+            Icons.delete_outline,
+            color: Colors.red,
+          ),
+        ).marginOnly(right: 5),
       ),
     );
   }
@@ -54,6 +61,17 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           AppBar(
+            leading: IconButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+              ),
+              onPressed: () => Get.back(),
+              icon: Icon(
+                Icons.chevron_left_sharp,
+                size: 30,
+                color: Colors.black,
+              ),
+            ),
             title: Text(
               "Postear hilo",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -279,6 +297,10 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
           maxLines: 2,
           decoration: InputDecoration(
             hintText: "Enlace",
+            suffix: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.link),
+            ),
           ),
         ).marginOnly(top: 10)
       ],

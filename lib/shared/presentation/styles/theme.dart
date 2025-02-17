@@ -8,7 +8,7 @@ final defaultFlatInputBorder = new OutlineInputBorder(
 
 final defaultBorderRadius = BorderRadius.circular(12);
 
-final shortInputBorderRadius = BorderRadius.circular(6);
+final lightBorderRadius = BorderRadius.circular(6);
 
 final defaultButtonStyle = ButtonStyle(
   elevation: WidgetStatePropertyAll(0),
@@ -33,6 +33,15 @@ class AppThemes {
 
   static final ThemeData _default = ThemeData(
     fontFamily: "Poppins",
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       border: defaultFlatInputBorder,
@@ -49,6 +58,12 @@ class AppThemes {
     dialogTheme: DialogTheme(
       backgroundColor: AppLightColors.surface,
     ),
+    iconButtonTheme: IconButtonThemeData(
+      style: _default.iconButtonTheme.style!.copyWith(
+        backgroundColor: WidgetStatePropertyAll(AppLightColors.primary),
+        iconColor: WidgetStatePropertyAll(AppLightColors.onPrimary),
+      ),
+    ),
     scaffoldBackgroundColor: AppLightColors.surface,
     brightness: Brightness.light,
     inputDecorationTheme: _default.inputDecorationTheme.copyWith(
@@ -62,6 +77,9 @@ class AppThemes {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: _default.elevatedButtonTheme.style!.copyWith(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: lightBorderRadius),
+        ),
         backgroundColor: WidgetStatePropertyAll(AppLightColors.primary),
         iconColor: WidgetStatePropertyAll(AppLightColors.onPrimary),
         foregroundColor: WidgetStatePropertyAll(AppLightColors.onPrimary),

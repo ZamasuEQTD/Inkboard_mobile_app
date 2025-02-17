@@ -77,16 +77,12 @@ class HomePage extends StatelessWidget {
           child: IconButton(
             style: ButtonStyle(
               fixedSize: WidgetStatePropertyAll(Size.square(50)),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-              backgroundColor: WidgetStatePropertyAll(Colors.grey.shade900),
             ),
             onPressed: () => showDialog(
               context: context,
               builder: (context) => PostearHiloDialog(),
             ),
-            icon: Icon(Icons.add, color: Colors.white, size: 25),
+            icon: Icon(Icons.add, size: 25),
           ),
         )
       ],
