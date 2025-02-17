@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/portadas-grid/portadas_grid.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
@@ -62,6 +63,7 @@ class HomePage extends StatelessWidget {
                 builder: (child) => MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
+                    onTap: () => Get.toNamed("/hilo"),
                     child: child,
                   ),
                 ),

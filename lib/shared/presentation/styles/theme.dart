@@ -42,6 +42,14 @@ class AppThemes {
         ),
       ),
     ),
+    chipTheme: ChipThemeData(
+      side: BorderSide.none,
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      labelStyle: TextStyle(fontWeight: FontWeight.w600, color: Colors.black),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       border: defaultFlatInputBorder,
