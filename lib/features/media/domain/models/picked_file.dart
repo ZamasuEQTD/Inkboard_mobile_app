@@ -1,13 +1,11 @@
 import 'dart:io';
 
 class PickedFile {
-  final File file;
+  final String source;
 
-  const PickedFile({required this.file});
+  final PickedFileProvider provider;
+
+  const PickedFile({required this.source, required this.provider});
 }
 
-class EmbedFile {
-  final String url;
-
-  const EmbedFile({required this.url});
-}
+enum PickedFileProvider { youtube, video, image, other }
