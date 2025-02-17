@@ -8,7 +8,7 @@ import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-const _radius = BorderRadius.all(Radius.circular(4));
+const _radius = BorderRadius.all(Radius.circular(8));
 
 class PortadaItem extends StatelessWidget {
   static const _gradient = [
@@ -27,76 +27,79 @@ class PortadaItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconTheme(
-        data: IconThemeData(color: Colors.white),
-        child: ClipRRect(
-          borderRadius: _radius,
-          child: ImageOverlapped.provider(
-              provider: NetworkImage(portada.miniatura.url),
-              boxFit: BoxFit.cover,
-              child: Blur(
-                  blurear: portada.miniatura.spoiler,
-                  child: GradientEffectWidget(
-                    colors: _gradient,
-                    stops: _stops,
-                    child: Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Wrap(
-                            spacing: 2,
-                            runSpacing: 2,
-                            children: [
-                              Tag.text(
-                                portada.subcategoria,
-                                background: Colors.red,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 2,
-                                  horizontal: 4,
-                                ),
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              if (portada.esNuevo)
-                                Tag.text(
-                                  "Nuevo",
-                                  background: Colors.blue,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 2,
-                                    horizontal: 4,
-                                  ),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ...[
-                                if (portada.banderas.esSticky)
-                                  TagPortadaIcon(
-                                    icon: Icon(Icons.sticky_note_2),
-                                    background: Colors.amber.shade700,
-                                  ),
-                                if (portada.banderas.dadosActivado)
-                                  TagPortadaIcon(icon: Icon(Icons.casino)),
-                                if (portada.banderas.idUnicoActivado)
-                                  TagPortadaIcon(icon: Icon(Icons.person)),
-                                if (portada.banderas.tieneEncuesta)
-                                  TagPortadaIcon(icon: Icon(Icons.bar_chart))
-                              ]
-                            ],
+      data: IconThemeData(color: Colors.white),
+      child: ClipRRect(
+        borderRadius: _radius,
+        child: ImageOverlapped.provider(
+          provider: NetworkImage(portada.miniatura.url),
+          boxFit: BoxFit.cover,
+          child: Blur(
+            blurear: portada.miniatura.spoiler,
+            child: GradientEffectWidget(
+              colors: _gradient,
+              stops: _stops,
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 2,
+                      runSpacing: 2,
+                      children: [
+                        Tag.text(
+                          portada.subcategoria,
+                          background: Colors.red,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 4,
                           ),
-                          Text(
-                            portada.titulo,
-                            maxLines: 2,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                              overflow: TextOverflow.ellipsis,
-                              color: Colors.white,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        if (portada.esNuevo)
+                          Tag.text(
+                            "Nuevo",
+                            background: Colors.blue,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 4,
                             ),
+                            style: TextStyle(color: Colors.white),
                           ),
-                        ],
+                        ...[
+                          if (portada.banderas.esSticky)
+                            TagPortadaIcon(
+                              icon: Icon(Icons.sticky_note_2),
+                              background: Colors.amber.shade700,
+                            ),
+                          if (portada.banderas.dadosActivado)
+                            TagPortadaIcon(icon: Icon(Icons.casino)),
+                          if (portada.banderas.idUnicoActivado)
+                            TagPortadaIcon(icon: Icon(Icons.person)),
+                          if (portada.banderas.tieneEncuesta)
+                            TagPortadaIcon(icon: Icon(Icons.bar_chart))
+                        ]
+                      ],
+                    ),
+                    Text(
+                      portada.titulo,
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                        overflow: TextOverflow.ellipsis,
+                        color: Colors.white,
                       ),
                     ),
-                  ))),
-        ));
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

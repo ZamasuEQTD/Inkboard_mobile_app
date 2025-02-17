@@ -17,7 +17,11 @@ class HomePage extends StatelessWidget {
                 pinned: true,
                 title: Text(
                   "Inkboard",
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 28),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.6,
+                  ),
                 ),
                 actions: [
                   Builder(

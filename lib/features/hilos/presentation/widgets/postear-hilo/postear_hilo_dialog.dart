@@ -3,23 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PostearHiloController extends GetxController {
-  final Rx<List<TextEditingController>> encuesta = Rx([]);
-
-  addOpcion() {
-    encuesta.value = [...encuesta.value, TextEditingController()];
-  }
-
-  eliminarOpcion(int index) {
-    encuesta.value[index].dispose();
-
-    encuesta.value.removeAt(index);
-
-    encuesta.refresh();
-  }
-
-  void postear() {}
-}
+import '../../../../media/data/file_picker_service.dart';
+import '../../logic/controllers/postear_hilo_controller.dart';
 
 class EncuestaOpcionTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -65,221 +50,98 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
   @override
   Widget build(BuildContext context) {
     Widget child = Obx(() {
-      return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Form(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppBar(
-                  title: Text(
-                    "Postear hilo",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Text(
-                  "Titulo",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: InputBorder.none,
-                    hintText: "Titulo",
-                  ),
-                ),
-                PostearHiloDialog.marginSection,
-                Text(
-                  "Descripcion",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  minLines: 5,
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
-                    hintText: "Descripción",
-                  ),
-                ),
-                PostearHiloDialog.marginSection,
-                Text(
-                  "Encuesta",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-
-                //---portada---
-                if (true)
-                  Column(
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppBar(
+            title: Text(
+              "Postear hilo",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 10),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 15).copyWith(bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ButtonStyle(
-                                    shape: WidgetStatePropertyAll(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
-                                      ),
-                                    ),
-                                    backgroundColor: WidgetStatePropertyAll(
-                                        Colors.grey.shade200),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      "Seleccionar Portada",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: Colors.black),
-                                    ),
-                                  )),
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                  shape: WidgetStatePropertyAll(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
-                                    ),
-                                  ),
-                                  backgroundColor: WidgetStatePropertyAll(
-                                      Colors.grey.shade200),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(
-                                    "Seleccionar Portada",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        "Titulo",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       TextFormField(
-                        decoration: InputDecoration(hintText: "Enlace"),
-                        minLines: 2,
-                        maxLines: 2,
+                        decoration: InputDecoration(
+                          hintText: "Titulo",
+                        ),
+                      ),
+                      PostearHiloDialog.marginSection,
+                      Text(
+                        "Descripcion",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      TextFormField(
+                        minLines: 5,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          hintText: "Descripción",
+                        ),
+                      ),
+                      PostearHiloDialog.marginSection,
+                      Text(
+                        "Portada",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      //---portada---
+                      if (!postearHiloController.hayPortadaSeleccionada)
+                        _sinPortadaSeleccionadaWidget()
+                      else
+                        Container(),
+                      PostearHiloDialog.marginSection,
+                      Text(
+                        "Encuesta",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      if (!postearHiloController.hayEncuesta)
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: Icon(Icons.poll_outlined),
+                            onPressed: () => postearHiloController.addOpcion(),
+                            label: Text("Agregar encuesta"),
+                          ),
+                        )
+                      else
+                        ..._encuestaWidget,
+                      PostearHiloDialog.marginSection,
+                      Text(
+                        "Banderas",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      _banderasWidget(),
+                      PostearHiloDialog.marginSection,
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text("Postear"),
+                        ),
                       )
                     ],
                   ),
-                //---portada---
-
-                Text(
-                  "Encuesta",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                if (postearHiloController.encuesta.value.isEmpty)
-                  ElevatedButton(
-                    onPressed: () {
-                      postearHiloController.addOpcion();
-                    },
-                    child: Text("Agregar encuesta"),
-                  )
-                else ...[
-                  ...postearHiloController.encuesta.value
-                      .asMap()
-                      .entries
-                      .map((entry) {
-                    return EncuestaOpcionTextField(
-                      controller: entry.value,
-                      index: entry.key,
-                      onDelete: (index) {
-                        postearHiloController.eliminarOpcion(index);
-                      },
-                    );
-                  }),
-                  ElevatedButton(
-                    onPressed: () {
-                      postearHiloController.addOpcion();
-                    },
-                    child: Text("Agregar encuesta"),
-                  )
-                ],
-                PostearHiloDialog.marginSection,
-                Text(
-                  "Banderas",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: ColoredBox(
-                    color: Colors.grey.shade200,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Dados activados",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Checkbox(
-                                  value: false,
-                                  onChanged: (value) {},
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Id unico",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Checkbox(
-                                  value: false,
-                                  onChanged: (value) {},
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                PostearHiloDialog.marginSection,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Postear"),
-                  ),
-                )
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       );
     });
 
@@ -289,17 +151,137 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
           return Dialog.fullscreen(child: child);
         }
 
+        Size size = MediaQuery.of(context).size;
+
         return Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: Colors.white,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 800),
-            child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 5), child: child),
+            constraints: BoxConstraints(maxHeight: size.height * 0.85),
+            child: SizedBox(
+              width: 600,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: child,
+              ),
+            ),
           ),
         );
       },
+    );
+  }
+
+  ClipRRect _banderasWidget() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: ColoredBox(
+        color: Colors.grey.shade200,
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Dados activados",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Checkbox(
+                        value: postearHiloController.dados.value,
+                        onChanged: (value) =>
+                            postearHiloController.dados.value = value!)
+                  ],
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Id unico",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Checkbox(
+                      value: postearHiloController.idUnico.value,
+                      onChanged: (value) =>
+                          postearHiloController.idUnico.value = value!,
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> get _encuestaWidget {
+    return [
+      ...postearHiloController.encuesta.value.asMap().entries.map((entry) {
+        return EncuestaOpcionTextField(
+          controller: entry.value,
+          index: entry.key,
+          onDelete: (index) {
+            postearHiloController.eliminarOpcion(index);
+          },
+        ).marginOnly(bottom: 10);
+      }),
+      if (postearHiloController.puedeAgregarOpcionDeEncuesta)
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: () => postearHiloController.addOpcion(),
+            child: Text("Agregar opción"),
+          ),
+        )
+    ];
+  }
+
+  Column _sinPortadaSeleccionadaWidget() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.file_copy),
+                label: Text(
+                  "Agregar Archivo",
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.link),
+                label: Text(
+                  "Agregar enlace",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black),
+                ),
+              ),
+            ),
+          ],
+        ),
+        TextFormField(
+          minLines: 2,
+          maxLines: 2,
+          decoration: InputDecoration(
+            hintText: "Enlace",
+          ),
+        ).marginOnly(top: 10)
+      ],
     );
   }
 }
