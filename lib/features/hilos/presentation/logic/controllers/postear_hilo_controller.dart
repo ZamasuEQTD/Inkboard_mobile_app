@@ -13,6 +13,8 @@ class PostearHiloController extends GetxController {
 
   final Rx<PickedFile?> pickedFile = null.obs;
 
+  final posteando = false.obs;
+
   void addOpcion() {
     if (!puedeAgregarOpcionDeEncuesta) return;
 
@@ -27,7 +29,12 @@ class PostearHiloController extends GetxController {
     encuesta.refresh();
   }
 
+  Future<void> postear() async{
+    if(isPosteando) return;
+  }
+
+  bool get isPosteando => posteando.value;
   bool get hayEncuesta => encuesta.isNotEmpty;
   bool get hayPortadaSeleccionada => pickedFile.value != null;
-  bool get puedeAgregarOpcionDeEncuesta => this.encuesta.length < 4;
+  bool get puedeAgregarOpcionDeEncuesta => encuesta.length < 4;
 }

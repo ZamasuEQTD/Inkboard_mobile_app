@@ -1,3 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:inkboard/features/media/domain/models/media.dart';
+import 'package:inkboard/features/media/domain/models/picked_file.dart';
+
 class ComentarioModel {
   final String id;
   final String texto;
@@ -119,52 +125,6 @@ class ComentarioModel {
       'media': media?.toJson(),
       'autor_role': autorRole,
       'autor': autor,
-    };
-  }
-}
-
-class MediaModel {
-  final String provider;
-  final bool spoiler;
-  final String url;
-  final String? previsualizacion;
-
-  MediaModel({
-    required this.provider,
-    required this.spoiler,
-    required this.url,
-    this.previsualizacion,
-  });
-
-  MediaModel copyWith({
-    String? provider,
-    bool? spoiler,
-    String? url,
-    String? previsualizacion,
-  }) {
-    return MediaModel(
-      provider: provider ?? this.provider,
-      spoiler: spoiler ?? this.spoiler,
-      url: url ?? this.url,
-      previsualizacion: previsualizacion ?? this.previsualizacion,
-    );
-  }
-
-  factory MediaModel.fromJson(Map<String, dynamic> json) {
-    return MediaModel(
-      provider: json['provider'],
-      spoiler: json['spoiler'],
-      url: json['url'],
-      previsualizacion: json['previsualizacion'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'provider': provider,
-      'spoiler': spoiler,
-      'url': url,
-      'previsualizacion': previsualizacion,
     };
   }
 }

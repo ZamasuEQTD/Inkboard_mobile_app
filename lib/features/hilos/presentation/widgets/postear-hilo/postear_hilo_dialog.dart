@@ -2,6 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
+import 'package:inkboard/features/hilos/presentation/pages/hilo_page.dart';
+import 'package:inkboard/features/media/domain/models/media.dart';
+import 'package:inkboard/features/media/presentation/logic/extensions/media_extensions.dart';
+import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 
 import '../../../../media/data/file_picker_service.dart';
 import '../../logic/controllers/postear_hilo_controller.dart';
@@ -62,9 +67,6 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
         children: [
           AppBar(
             leading: IconButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-              ),
               onPressed: () => Get.back(),
               icon: Icon(
                 Icons.chevron_left_sharp,
@@ -120,7 +122,9 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                       if (!postearHiloController.hayPortadaSeleccionada)
                         _sinPortadaSeleccionadaWidget()
                       else
-                        Container(),
+                        MediaBox(
+                          media : MediaSource(source: MediaSourceType.file, model: this.postearHiloController.pickedFile.value!.toMediaModel())
+                        ),
                       PostearHiloDialog.marginSection,
                       Text(
                         "Encuesta",
@@ -267,7 +271,13 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  FilePickerService().pickOne().then((value) {
+                    if(value != null){
+                       postearHiloController.pickedFile.value = value;
+                    }
+                  },);
+                },
                 icon: Icon(Icons.file_copy),
                 label: Text(
                   "Agregar Archivo",
