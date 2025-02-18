@@ -1,0 +1,2 @@
+/home/zamasu/Desktop/Inkboard_mobile_app/android/app/.cxx/Debug/721j5m4u/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/zamasu/Desktop/Inkboard_mobile_app/android/app/.cxx/Debug/721j5m4u/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,2 @@
+/home/zamasu/Desktop/Inkboard_mobile_app/android/app/.cxx/RelWithDebInfo/3j4by236/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/zamasu/Desktop/Inkboard_mobile_app/android/app/.cxx/RelWithDebInfo/3j4by236/armeabi-v7a/CMakeFiles/rebuild_cache.dir
