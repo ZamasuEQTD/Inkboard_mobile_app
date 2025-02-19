@@ -50,4 +50,4 @@ class MediaModel {
   }
 }
 
-enum MediaProvider { video, image, youtube, other }
+enum MediaProvider { video, image,gif, youtube, other }

@@ -46,12 +46,14 @@ class MediaBox extends StatelessWidget {
 
       if(builder == null ) throw UnimplementedError("Media no soportado!!!");
 
-      Widget dimensionable = builder(media);
+      Widget dimensionable = this.builder != null ? this.builder!(context, builder(media)) : builder(media);;
 
       if (style.radius != null) {
-        dimensionable = ClipRRect(
-          borderRadius: style.radius!,
-          child: dimensionable,
+        dimensionable = ClipRect(
+          child: ClipRRect(
+            borderRadius: style.radius!,
+            child: dimensionable,
+          ),
         );
       }
 
@@ -62,7 +64,7 @@ class MediaBox extends StatelessWidget {
         );
       }
 
-      return this.builder != null ? this.builder!(context, dimensionable) : dimensionable;
+      return dimensionable;
     }
 
     return Container();
