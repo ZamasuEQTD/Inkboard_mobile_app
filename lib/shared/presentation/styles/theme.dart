@@ -16,7 +16,7 @@ final defaultButtonStyle = ButtonStyle(
     TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
   ),
   padding: WidgetStatePropertyAll(
-    EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    EdgeInsets.symmetric(horizontal: 16, vertical: 20),
   ),
   shape: WidgetStatePropertyAll(
     RoundedRectangleBorder(borderRadius: defaultBorderRadius),

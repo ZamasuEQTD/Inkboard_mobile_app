@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
+import 'package:inkboard/features/core/dependency_injection.dart';
 import 'package:inkboard/features/core/presentation/utils/breakpoints.dart';
 import 'package:inkboard/features/core/router.dart';
-import 'package:inkboard/features/home/presentation/pages/home_page.dart';
 import 'package:inkboard/shared/presentation/styles/theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  GetIt.I.addDependencies();
+
+  Get.put(AuthController());
+
   runApp(const MyApp());
 }
 

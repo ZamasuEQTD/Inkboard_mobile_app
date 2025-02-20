@@ -50,7 +50,7 @@ class PortadaItem extends StatelessWidget {
                       children: [
                         Tag.text(
                           portada.subcategoria,
-                          background: Colors.red,
+                          background: Colors.green,
                           padding: EdgeInsets.symmetric(
                             vertical: 2,
                             horizontal: 4,
@@ -60,7 +60,7 @@ class PortadaItem extends StatelessWidget {
                         if (portada.esNuevo)
                           Tag.text(
                             "Nuevo",
-                            background: Colors.blue,
+                            background: Colors.purple.shade300,
                             padding: EdgeInsets.symmetric(
                               vertical: 2,
                               horizontal: 4,

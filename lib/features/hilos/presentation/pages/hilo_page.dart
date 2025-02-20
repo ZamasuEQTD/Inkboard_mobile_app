@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,7 @@ import 'package:inkboard/features/hilos/presentation/widgets/comentario.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/presentation/logic/extensions/media_extensions.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
+import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class HiloPage extends StatefulWidget {
@@ -22,62 +25,13 @@ class _HiloPageState extends State<HiloPage> {
 
   final GlobalKey key = GlobalKey();
 
-  final RxList<ComentarioModel> comentarios = RxList([
-    ComentarioModel(
-      id: "1",
-      texto: "Este es un comentario con >>A1B2C3D4.",
-      createdAt: DateTime.now(),
-      autorId: "user123",
-      esAutor: true,
-      destacado: false,
-      respondidoPor: [],
-      respondeA: [],
-      esOp: true,
-      tag: "discusión",
-      tagUnico: "discusión-1",
-      recibirNotificaciones: true,
-      color: "#FF0000",
-      autorRole: "admin",
-      autor: "Usuario1",
-    ),
-    ComentarioModel(
-      id: "2",
-      texto: "¡Hola a todos! >>Z9Y8X7W6 es un tag interesante.",
-      createdAt: DateTime.now().subtract(Duration(hours: 2)),
-      autorId: "user456",
-      esAutor: false,
-      destacado: true,
-      respondidoPor: ["user123"],
-      respondeA: ["1"],
-      esOp: false,
-      tag: "pregunta",
-      tagUnico: "pregunta-2",
-      recibirNotificaciones: false,
-      color: "#00FF00",
-      dados: "Dados de ejemplo",
-      media: null,
-      autorRole: "user",
-      autor: "Usuario2",
-    ),
-    ComentarioModel(
-      id: "3",
-      texto: "¿Alguien más vio esto? >>B2C3D4E5.",
-      createdAt: DateTime.now().subtract(Duration(days: 1)),
-      autorId: "user789",
-      esAutor: false,
-      destacado: false,
-      respondidoPor: [],
-      respondeA: [],
-      esOp: false,
-      tag: "opinión",
-      tagUnico: "opinión-3",
-      recibirNotificaciones: true,
-      color: "#0000FF",
-      dados: null,
-      autorRole: "moderador",
-      autor: "Usuario3",
-    ),
-  ]);
+  late final ScrollController scroll = ScrollController();
+
+  @override
+  void initState() {
+    scroll.onBottom(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +58,8 @@ class _HiloPageState extends State<HiloPage> {
                         children: [
                           Flexible(
                             child: CustomScrollView(
+                              clipBehavior: Clip.none,
+                              controller: scroll,
                               slivers: [_comentariosList()],
                             ),
                           ),
@@ -122,6 +78,7 @@ class _HiloPageState extends State<HiloPage> {
             children: [
               Flexible(
                 child: CustomScrollView(
+                  controller: scroll,
                   slivers: [
                     SliverToBoxAdapter(
                       child: ClipRRect(
@@ -157,12 +114,16 @@ class _HiloPageState extends State<HiloPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
             ),
           ),
-          SliverList.builder(
-            itemCount: comentarios.length,
-            itemBuilder:
-                (context, index) =>
-                    ComentarioWidget(comentario: comentarios[index]),
-          ),
+          Obx(() {
+            var comentarios = [...this.controller.destacados, ...controller.comentarios];
+            
+            return SliverList.builder(
+              itemCount: comentarios.length,
+              itemBuilder:
+                  (context, index) =>
+                      ComentarioWidget(comentario: comentarios[index]),
+            );
+          }),
         ],
       ),
     );
@@ -184,10 +145,7 @@ class HiloBody extends StatelessWidget {
             child: Row(
               spacing: 4,
               children: [
-                IconButton(
-                  onPressed:  Get.back,
-                  icon: Icon(Icons.chevron_left),
-                ),
+                IconButton(onPressed: Get.back, icon: Icon(Icons.chevron_left)),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: SizedBox.square(
@@ -266,7 +224,10 @@ class HiloBody extends StatelessWidget {
 
         Center(
           child: MediaBox(
-            style: DimensionableStyle(radius: BorderRadius.circular(10),constraints: BoxConstraints(maxHeight: 450)),
+            style: DimensionableStyle(
+              radius: BorderRadius.circular(10),
+              constraints: BoxConstraints(maxHeight: 450),
+            ),
             media: MediaSource(
               source: MediaSourceType.network,
               model: MediaModel(
@@ -354,4 +315,3 @@ extension ResponsiveExtensions on BuildContext {
   bool get isLargerThanMd =>
       ResponsiveBreakpoints.of(this).largerThan(Breakpoints.md.name!);
 }
-
