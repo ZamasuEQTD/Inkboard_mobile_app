@@ -6,7 +6,7 @@ class TokenSecureStorage extends ITokenStorage {
   
   static const String key = "token";
 
-  final FlutterSecureStorage _storage = GetIt.I.get();
+  final FlutterSecureStorage _storage =FlutterSecureStorage();
 
   @override
   Future<void> eliminar() {

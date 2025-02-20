@@ -24,7 +24,7 @@ class DioAuthRepository extends IAuthRepository {
         return Left(response.toFailure);
       }
 
-      return Right(response.data["value"]);
+      return Right(response.data["data"]);
     } on Exception catch (e) {
       return Left(e.toFailure);
     }
