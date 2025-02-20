@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/domain/iauth_repository.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
-import 'package:inkboard/features/auth/presentation/widgets/login_dialog.dart';
 import 'package:inkboard/features/core/presentation/widgets/dialog/dialog_responsive.dart';
 
 class RegistroDialog extends StatefulWidget {
@@ -16,7 +15,7 @@ class RegistroDialog extends StatefulWidget {
 class _RegistroDialogState extends State<RegistroDialog> {
 
   final IAuthRepository repository = GetIt.I.get();
-  final AuthController auth = GetIt.I.get();
+  final AuthController auth = Get.find();
 
   final TextEditingController usuario = TextEditingController();
   final TextEditingController password = TextEditingController();

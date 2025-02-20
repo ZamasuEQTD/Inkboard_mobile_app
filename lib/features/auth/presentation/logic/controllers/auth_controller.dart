@@ -39,7 +39,7 @@ class AuthController extends GetxController {
   final RxBool authenticando = false.obs;
 
   bool get authenticado => usuario.value != null;
-
+  AuthenticatedUser get currentUser => usuario.value ?? (throw Exception('No está autenticado'));
   @override
   void onInit() async {
     restaurarSesion();
