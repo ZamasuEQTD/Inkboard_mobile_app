@@ -4,5 +4,5 @@ import 'package:inkboard/features/home/presentation/pages/home_page.dart';
 
 var routes = [
   GetPage(name: '/', page: () => HomePage()),
-  GetPage(name: '/hilo', page: () => HiloPage()),
+  GetPage(name: '/hilo/:id', page: () => HiloPage()),
 ];

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/auth/presentation/widgets/login_dialog.dart';
 import 'package:inkboard/features/auth/presentation/widgets/registro_dialog.dart';
+import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/core/presentation/widgets/dialog/dialog_responsive.dart';
 import 'package:inkboard/features/hilos/presentation/pages/hilo_page.dart';
 
@@ -79,7 +80,7 @@ class _AutenticacionRequeridaButtonState
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return Obx(() => GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
         if (auth.authenticado) return;
@@ -87,6 +88,6 @@ class _AutenticacionRequeridaButtonState
         Get.dialog(AutenticacionRequerida());
       },
       child: IgnorePointer(ignoring: !auth.authenticado, child: widget.child),
-    );
+    ));
   }
 }
