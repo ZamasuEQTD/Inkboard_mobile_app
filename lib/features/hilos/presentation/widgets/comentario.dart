@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inkboard/features/core/presentation/widgets/revelador_de_contenido.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
@@ -31,7 +30,7 @@ class ComentarioWidget extends StatelessWidget {
         ClipRRect(
           borderRadius: comentarioRadius,
           child: ColoredBox(
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.secondary,
             child: Padding(
               padding: comentarioPadding,
               child: Column(
@@ -77,13 +76,13 @@ class ComentarioWidget extends StatelessWidget {
           ),
         ).marginSymmetric(vertical: 4),
 
-        Positioned(
-          left: -25,
-          child: SizedBox.square(
-            dimension: 50,
-            child: ColoredBox(color: Colors.red),
-          ),
-        ),
+        // Positioned(
+        //   left: -25,
+        //   child: SizedBox.square(
+        //     dimension: 50,
+        //     child: ColoredBox(color: Colors.red),
+        //   ),
+        // ),
       ],
     );
   }
@@ -131,9 +130,6 @@ class ComentarioWidget extends StatelessWidget {
   Widget get media => Center(
     child: MediaBox(
       style: DimensionableStyle(radius: BorderRadius.circular(10)),
-      builder:
-          (context, dimensionable) =>
-              ReveladorDeContenido(initialValue: true, child: dimensionable),
       media: MediaSource(
         source: MediaSourceType.network,
         model: comentario.media!,
@@ -157,31 +153,28 @@ class ColorComentario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget color = _colors[comentario.color]!;
+    Widget color = _colors[comentario.color.toLowerCase()]!;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox.square(
-        dimension: 50,
-        child: Stack(
-          children: [
-            color,
-            Positioned.fill(
-              child: Padding(
-                padding: EdgeInsets.all(2),
-                child: FittedBox(
-                  child: Text(
-                    "ANON",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+      borderRadius: BorderRadius.circular(5),
+      child: Stack(
+        children: [
+          SizedBox.square(dimension: 50, child: color),
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.all(2),
+              child: FittedBox(
+                child: Text(
+                  "ANON",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -199,23 +192,40 @@ class ComentarioSkeleton extends StatelessWidget {
     return ClipRRect(
       borderRadius: comentarioRadius,
       child: ColoredBox(
-        color: Theme.of(context).colorScheme.onSurface,
+        color: Theme.of(context).colorScheme.secondary,
         child: Padding(
           padding: comentarioPadding,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 2.5,
             children: [
               Row(
                 spacing: 4,
-                children: [Bone.square(size: 50), Bone(width: 100, height: 14)],
+                children: [
+                  Bone.square(size: 50, borderRadius: BorderRadius.circular(4)),
+                  Bone(
+                    width: 100,
+                    height: 14,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ],
               ),
-              if (_random.nextBool()) Bone(width: 250, height: 150),
+              if (_random.nextBool())
+                Bone(
+                  width: 250,
+                  height: 150,
+                  borderRadius: BorderRadius.circular(4),
+                ),
               Wrap(
                 spacing: 4,
                 runSpacing: 4,
                 children: List.generate(
                   _random.nextInt(10),
-                  (index) => Bone(height: 16, width: _random.nextInt(200) + 20),
+                  (index) => Bone(
+                    height: 16,
+                    width: _random.nextInt(200) + 20,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ],
