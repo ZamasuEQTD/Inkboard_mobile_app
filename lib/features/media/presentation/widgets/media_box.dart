@@ -22,7 +22,9 @@ class MediaBox extends StatelessWidget {
   });
 
   static HashMap<MediaProvider, Widget Function(MediaSource media)> builders = new HashMap.from({
-    MediaProvider.image : (MediaSource media) => Image(image: media.toImage())
+    MediaProvider.image : (MediaSource media) => Image(image: media.toImage()),
+    MediaProvider.gif : (MediaSource media) => Image(image: media.toImage())
+
   });
 
   final DimensionableStyle style;

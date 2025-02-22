@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -6,26 +8,54 @@ import 'package:inkboard/features/core/presentation/utils/network/extensions/exc
 import 'package:inkboard/features/core/presentation/utils/network/extensions/response_extensions.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
+import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
+import 'package:inkboard/features/media/domain/models/picked_file.dart';
 
 class DioHilosRepository extends IHilosRepository {
   final Dio dio = GetIt.I.get();
 
   @override
-  Future<Either<Failure, List<ComentarioModel>>> getComentarios(
-    String hilo,
-  ) async {
-    throw new UnimplementedError();
+  Future<Either<Failure, ComentariosHilo>> getComentarios(
+    String hilo, {
+    String? ultimoComentario,
+  }) async {
+    try {
+      var response = await dio.get(
+        "comentarios/hilo/$hilo",
+        queryParameters: {"UltimoComentario": ultimoComentario},
+      );
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      Map<String, dynamic> data = response.data!["data"];
+
+      return Right(
+        ComentariosHilo(
+          comentarios:
+              List.from(
+                data["comentarios"],
+              ).map((d) => ComentarioModel.fromJson(d)).toList(),
+          destacados:
+              List.from(
+                data["destacados"],
+              ).map((d) => ComentarioModel.fromJson(d)).toList(),
+        ),
+      );
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
   }
 
   @override
   Future<Either<Failure, List<PortadaModel>>> getPortadas({
-    String? ultimaPortada
+    String? ultimaPortada,
   }) async {
     try {
-      var response = await dio.get("hilos", queryParameters:  {
-        "UltimaPortada" : ultimaPortada
-      });
+      var response = await dio.get(
+        "hilos",
+        queryParameters: {"UltimaPortada": ultimaPortada},
+      );
 
       if (response.isFailure) return Left(response.toFailure);
 
@@ -36,10 +66,41 @@ class DioHilosRepository extends IHilosRepository {
       return Left(e.toFailure);
     }
   }
-}
 
-class ApiResponse<T> {
-  final T data;
+  @override
+  Future<Either<Failure, HiloModel>> getHilo(String hilo) async {
+    try {
+      var response = await dio.get("hilos/$hilo");
 
-  const ApiResponse({required this.data});
+      if (response.isFailure) return Left(response.toFailure);
+
+      Map<String, dynamic> data = response.data!["data"];
+
+      return Right(HiloModel.fromJson(data));
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> comentar(
+    String hilo, {
+    required String comentario,
+    PickedFile? file,
+  })async {
+    var form = FormData.fromMap({
+      "texto": comentario,
+      "file": file != null ? MultipartFile.fromFile(file.source) : null,
+    });
+
+     try {
+      var response = await dio.post("comentarios/comentar-hilo/$hilo", data: form);
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      return Right(unit);
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  } 
 }

@@ -34,7 +34,7 @@ class MediaModel {
   factory MediaModel.fromJson(Map<String, dynamic> json) {
     return MediaModel(
       provider: MediaProvider.values.firstWhere(
-        (e) => e.toString() == '.${json['provider'].toString().toLowerCase()}',
+        (e) => e.name == json['provider'].toString().toLowerCase(),
       ),
       url: json['url'],
       previsualizacion: json['previsualizacion'],
