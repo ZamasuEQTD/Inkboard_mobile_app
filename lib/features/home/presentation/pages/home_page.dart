@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                         (child) => MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: GestureDetector(
-                            onTap: () => Get.toNamed("/hilo"),
+                            onTap: () => Get.toNamed("/hilo/${child.portada.id}"),
                             child: child,
                           ),
                         ),

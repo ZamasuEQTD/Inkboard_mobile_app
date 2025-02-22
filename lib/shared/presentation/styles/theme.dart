@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inkboard/shared/presentation/styles/colors.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 final defaultFlatInputBorder = new OutlineInputBorder(
   borderSide: BorderSide.none, // Sin borde
@@ -27,6 +28,8 @@ class AppThemes {
   const AppThemes._();
 
   static final ThemeData _default = ThemeData(
+
+    extensions: [],
     fontFamily: "Poppins",
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
@@ -52,8 +55,17 @@ class AppThemes {
   );
 
   static final ThemeData light = _default.copyWith(
+    colorScheme: ColorScheme.light(
+      surface: AppLightColors.surface,
+      secondary: AppLightColors.secondary,
+      onSurface:  AppLightColors.onSurface,
+      primary: AppLightColors.primary,
+      onPrimary: AppLightColors.onPrimary,
+      error: AppLightColors.error,
+      onError: AppLightColors.onError,
+    ),
+    appBarTheme: AppBarTheme(backgroundColor: AppLightColors.surface),
     dialogTheme: DialogTheme(backgroundColor: AppLightColors.surface),
-
     scaffoldBackgroundColor: AppLightColors.surface,
     brightness: Brightness.light,
     inputDecorationTheme: _default.inputDecorationTheme.copyWith(

@@ -29,12 +29,10 @@ class HomePageController extends GetxController {
       if(r.isEmpty){
         hayMasContenido.value = false;
       } else  {
-         portadas.addAll(r);
+        portadas.addAll(r);
 
         ultimaPortada = r.last.id;
       }
-
-     
     });
 
     cargandoPortadas.value = false;
