@@ -16,7 +16,7 @@ class ColorPicker {
     Colors.lime.shade500,
     Colors.amber.shade500,
     Colors.brown
-        .shade500, // Nota: No existe en Flutter, usar Colors.teal.shade500 como alternativa
+        .shade500, 
     Colors.cyan.shade500,
   ];
 

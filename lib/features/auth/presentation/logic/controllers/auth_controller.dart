@@ -39,6 +39,8 @@ class AuthController extends GetxController {
   final RxBool authenticando = false.obs;
 
   bool get authenticado => usuario.value != null;
+
+  bool get esModerador => usuario.value?.roles.contains(Roles.moderador) ?? false;
   AuthenticatedUser get currentUser => usuario.value ?? (throw Exception('No está autenticado'));
   @override
   void onInit() async {
