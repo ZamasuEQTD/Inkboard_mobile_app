@@ -21,6 +21,22 @@ abstract class IHilosRepository {
     required String comentario,
     PickedFile? file
   });
+
+  Future<Either<Failure,Unit>> establecerSticky(String hilo);
+
+  Future<Either<Failure,Unit>> eliminarSticky(String hilo);
+  Future<Either<Failure,Unit>> eliminar(String hilo);
+
+  Future<Either<Failure,Unit>> postear({
+    required String titulo,
+    required String descripcion,
+    required String subcategoria,
+    required List<String> encuesta,
+    required bool spoiler ,
+    required PickedFile portada,
+    required bool dados,
+    required bool idUnico,
+  });
 }
 
 class ComentariosHilo {
