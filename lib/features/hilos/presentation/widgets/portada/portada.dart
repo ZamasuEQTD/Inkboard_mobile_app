@@ -1,11 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
+import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/blur/blur.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/gradient_effect.dart';
 import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
+import 'package:popover/popover.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 const _radius = BorderRadius.all(Radius.circular(8));
@@ -44,42 +49,126 @@ class PortadaItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Wrap(
-                      spacing: 2,
-                      runSpacing: 2,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Tag.text(
-                          portada.subcategoria,
-                          background: Colors.green,
-                          padding: EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 4,
-                          ),
-                          style: TextStyle(color: Colors.white),
+                        Wrap(
+                          spacing: 2,
+                          runSpacing: 2,
+                          children: [
+                            Tag.text(
+                              portada.subcategoria,
+                              background: Colors.green,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2,
+                                horizontal: 4,
+                              ),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            if (portada.esNuevo)
+                              Tag.text(
+                                "Nuevo",
+                                background: Colors.purple.shade300,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 4,
+                                ),
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ...[
+                              if (portada.banderas.esSticky)
+                                TagPortadaIcon(
+                                  icon: Icon(Icons.sticky_note_2),
+                                  background: Colors.amber.shade700,
+                                ),
+                              if (portada.banderas.dadosActivado)
+                                TagPortadaIcon(icon: Icon(Icons.casino)),
+                              if (portada.banderas.idUnicoActivado)
+                                TagPortadaIcon(icon: Icon(Icons.person)),
+                              if (portada.banderas.tieneEncuesta)
+                                TagPortadaIcon(icon: Icon(Icons.bar_chart)),
+                            ],
+                          ],
                         ),
-                        if (portada.esNuevo)
-                          Tag.text(
-                            "Nuevo",
-                            background: Colors.purple.shade300,
-                            padding: EdgeInsets.symmetric(
-                              vertical: 2,
-                              horizontal: 4,
-                            ),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ...[
-                          if (portada.banderas.esSticky)
-                            TagPortadaIcon(
-                              icon: Icon(Icons.sticky_note_2),
-                              background: Colors.amber.shade700,
-                            ),
-                          if (portada.banderas.dadosActivado)
-                            TagPortadaIcon(icon: Icon(Icons.casino)),
-                          if (portada.banderas.idUnicoActivado)
-                            TagPortadaIcon(icon: Icon(Icons.person)),
-                          if (portada.banderas.tieneEncuesta)
-                            TagPortadaIcon(icon: Icon(Icons.bar_chart))
-                        ]
+                        Builder(
+                          builder: (context) {
+                            final AuthController auth = Get.find();
+
+                            return IconButton(
+                              onPressed: () {
+                                showPopover(
+                                  context: context,
+                                  width: 250,
+                                  bodyBuilder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          title: Text("Reportar"),
+                                          trailing: Icon(Icons.flag),
+                                        ),
+                                        ListTile(
+                                          title: Text("Ocultar"),
+                                          trailing: Icon(Icons.visibility_off),
+                                        ),
+                                        ListTile(
+                                          title: Text("Seguir"),
+                                          trailing: Icon(Icons.visibility_off),
+                                        ),
+
+                                        if (auth.authenticado &&
+                                            auth.esModerador) ...[
+                                          ListTile(
+                                            title: Text("Ver usuario"),
+                                            trailing: Icon(
+                                              Icons.visibility_off,
+                                            ),
+                                          ),
+                                          ListTile(
+                                            onTap:
+                                                () => GetIt.I
+                                                    .get<IHilosRepository>()
+                                                    .eliminar(portada.id),
+                                            title: Text("Eliminar"),
+                                            trailing: Icon(
+                                              Icons.delete_outline_outlined,
+                                            ),
+                                          ),
+                                          if (!portada.banderas.esSticky)
+                                            ListTile(
+                                              title: Text("Esteblecer sticky"),
+                                              trailing: Icon(Icons.push_pin),
+                                              onTap: () {
+                                                GetIt.I
+                                                    .get<IHilosRepository>()
+                                                    .establecerSticky(
+                                                      portada.id,
+                                                    );
+                                              },
+                                            )
+                                          else
+                                            ListTile(
+                                              title: Text("Eliminar sticky"),
+                                              trailing: Icon(Icons.push_pin),
+                                              onTap: () {
+                                                GetIt.I
+                                                    .get<IHilosRepository>()
+                                                    .establecerSticky(
+                                                      portada.id,
+                                                    );
+                                              },
+                                            ),
+                                        ],
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              icon: Icon(Icons.more_vert),
+                            );
+                          },
+                        ),
                       ],
                     ),
                     Text(
@@ -118,38 +207,40 @@ class PortadaItemSkeleton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: _radius,
         child: ColoredBox(
-            color: Colors.grey.shade200,
-            child: Padding(
-              padding: EdgeInsets.all(4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Wrap(
-                    runSpacing: 4,
-                    spacing: 4,
-                    children: List.generate(
-                        _random.nextInt(3) + 1,
-                        (i) => Bone.square(
-                              borderRadius: BorderRadius.circular(10),
-                              size: 30,
-                            )),
-                  ),
-                  Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: List.generate(
-                      3,
-                      (i) => Bone(
-                        borderRadius: BorderRadius.circular(10),
-                        width: _random.nextInt(150) + 50,
-                        height: 24,
-                      ),
+          color: Colors.grey.shade200,
+          child: Padding(
+            padding: EdgeInsets.all(4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  runSpacing: 4,
+                  spacing: 4,
+                  children: List.generate(
+                    _random.nextInt(3) + 1,
+                    (i) => Bone.square(
+                      borderRadius: BorderRadius.circular(10),
+                      size: 30,
                     ),
                   ),
-                ],
-              ),
-            )),
+                ),
+                Wrap(
+                  spacing: 2,
+                  runSpacing: 2,
+                  children: List.generate(
+                    3,
+                    (i) => Bone(
+                      borderRadius: BorderRadius.circular(10),
+                      width: _random.nextInt(150) + 50,
+                      height: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

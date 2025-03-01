@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
+import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
 
 class Spoileable<T> extends Equatable {
@@ -11,7 +14,6 @@ class Spoileable<T> extends Equatable {
   const Spoileable({required this.spoiler, required this.value});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [this.value, this.spoiler];
 
   Spoileable<T> copyWith({bool? spoiler, T? value}) {
@@ -23,8 +25,11 @@ class Spoileable<T> extends Equatable {
 }
 
 class PostearHiloController extends GetxController {
-  final titulo = "".obs;
-  final descripcion = "".obs;
+  final titulo =TextEditingController();
+  final descripcion = TextEditingController();
+
+
+  final Rx<SubcategoriaModel?> subcategoria =Rx(null);
 
   final dados = false.obs;
   final idUnico = false.obs;
@@ -34,6 +39,8 @@ class PostearHiloController extends GetxController {
   final Rx<Spoileable<PickedFile>?> pickedFile = Rx(null);
 
   final posteando = false.obs;
+
+  final IHilosRepository _repository = GetIt.I.get();
 
   void addOpcion() {
     if (!puedeAgregarOpcionDeEncuesta) return;
@@ -49,9 +56,7 @@ class PostearHiloController extends GetxController {
     encuesta.refresh();
   }
 
-  Future<void> postear() async {
-    if (isPosteando) return;
-  }
+ 
 
   void switchSpoiler() {
      pickedFile.value =  pickedFile.value!.copyWith(
@@ -65,6 +70,17 @@ class PostearHiloController extends GetxController {
 
   void eliminarPortada(){
     pickedFile.value = null;
+  }
+
+  void postear()async{
+    
+    if(isPosteando)return;
+    
+    posteando.value = true;
+
+    await _repository.postear(titulo: titulo.text, descripcion: descripcion.text, subcategoria: subcategoria.value!.id,dados: dados.value, encuesta: encuesta.map((o)=> o.text).toList(),idUnico: idUnico.value,spoiler: this.isSpoiler,portada: this.pickedFile.value!.value);
+   
+    posteando.value = false;
   }
 
   bool get isPosteando => posteando.value;
