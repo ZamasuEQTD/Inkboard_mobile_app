@@ -53,7 +53,6 @@ class RegistroItem extends StatelessWidget {
               ),
               Text(
                 "Hace ${registro.fecha.tiempoTranscurrido}",
-                style: Theme.of(context).textTheme.labelMedium,
               ),
               Text(
                 registro.contenido,

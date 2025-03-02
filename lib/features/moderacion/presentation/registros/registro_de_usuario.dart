@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/core/presentation/widgets/dialog/dialog_responsive.dart';
+import 'package:inkboard/features/moderacion/domain/ibaneos_repository.dart';
 import 'package:inkboard/features/moderacion/domain/models/registro.dart';
+import 'package:inkboard/features/moderacion/presentation/baneos/banear_usuario.dart';
 import 'package:inkboard/features/moderacion/presentation/registros/logic/moderacion_usuario_registro_controller.dart';
 import 'package:inkboard/features/moderacion/presentation/registros/registro_item.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
@@ -163,8 +166,37 @@ class _RegistroDeUsuarioModeradorPanelState
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          style: context.destructibleButtonStyle,
+                          onPressed:
+                              () => showDialog(
+                                context: context,
+                                builder:
+                                    (context) => BanearUsuarioDialog(
+                                      usuario: widget.usuario,
+                                    ),
+                              ),
                           child: const Text("Banear usuario"),
+                        ),
+                      ).marginSymmetric(horizontal: 10),
+                      SizedBox(height: 5),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Colors.white,
+                            ),
+                            foregroundColor: WidgetStatePropertyAll(
+                              Colors.black,
+                            ),
+                          ),
+
+                          onPressed: () {
+                            GetIt.I.get<IBaneosRepository>().desbanear(
+                              id: widget.usuario,
+                            );
+                          },
+                          child: const Text("Desbanear usuario"),
                         ),
                       ).marginSymmetric(horizontal: 10),
                     ],
