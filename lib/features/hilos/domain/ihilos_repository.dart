@@ -22,7 +22,13 @@ abstract class IHilosRepository {
     PickedFile? file
   });
 
+  
+
   Future<Either<Failure,Unit>> establecerSticky(String hilo);
+
+  Future<Either<Failure,Unit>> seguir(String hilo);
+  Future<Either<Failure,Unit>> ocultar(String hilo);
+  Future<Either<Failure,Unit>> establecerFavorito(String hilo);
 
   Future<Either<Failure,Unit>> eliminarSticky(String hilo);
   Future<Either<Failure,Unit>> eliminar(String hilo);

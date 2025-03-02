@@ -7,6 +7,7 @@ import 'package:inkboard/features/core/domain/util/tag_util.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
+import 'package:inkboard/features/media/domain/ifile_picker_service.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
 
 class HiloPageController extends GetxController {
@@ -26,6 +27,7 @@ class HiloPageController extends GetxController {
   final RxBool cargandoComentarios = false.obs;
   final RxBool comentandoHilo = false.obs;
 
+  final IFilePickerService _picker = GetIt.I.get();
 
   final IHilosRepository _repository = GetIt.I.get();
 
@@ -69,20 +71,30 @@ class HiloPageController extends GetxController {
     comentario.text += ">>$tag";
   }
 
-  void comentar()async {
-    if(comentandoHilo.value) return;
+  void comentar() async {
+    if (comentandoHilo.value) return;
 
     comentandoHilo.value = true;
 
-    await  _repository.comentar(id, comentario: comentario.text, file:files.firstOrNull);
-  
+    await _repository.comentar(
+      id,
+      comentario: comentario.text,
+      file: files.firstOrNull,
+    );
+
     comentandoHilo.value = false;
   }
 
-  bool haTagueadoA(String tag) => TagUtils.incluyeTag(comentario.text, tag);
+  Future pickGaleriaFile() async {
+    var picked = await _picker.pickOne();
 
+    if (picked == null) return;
+
+    files.value = [picked];
+  }
+
+  bool haTagueadoA(String tag) => TagUtils.incluyeTag(comentario.text, tag);
   bool get limiteDeTaggueosAlcanzado =>
       TagUtils.cantidadTags(comentario.text) >= cantidadMaximaDeTaggueos;
-
   bool get hayMediaSeleccionada => files.isNotEmpty;
 }

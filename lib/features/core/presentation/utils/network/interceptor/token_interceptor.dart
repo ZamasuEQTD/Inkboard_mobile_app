@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 
 class TokenInterceptor extends Interceptor {

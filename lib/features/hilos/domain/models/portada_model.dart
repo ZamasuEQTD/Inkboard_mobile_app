@@ -2,6 +2,7 @@ class PortadaModel {
   final String id;
   final String titulo;
   final String subcategoria;
+  final String? autorId;
   final bool esNuevo;
   final MiniaturaModel miniatura;
   final Banderas banderas;
@@ -10,9 +11,10 @@ class PortadaModel {
     required this.id,
     required this.titulo,
     required this.subcategoria,
+    this.autorId,
     required this.esNuevo,
     required this.miniatura,
-    required this.banderas
+    required this.banderas,
   });
 
   factory PortadaModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class PortadaModel {
       titulo: json['titulo'],
       subcategoria: json['subcategoria'],
       esNuevo: json['es_nuevo'],
+      autorId: json['autor_id'],
       miniatura: MiniaturaModel.fromJson(json['miniatura']),
       banderas: Banderas.fromJson(json['banderas']),
     );
@@ -34,18 +37,15 @@ class MiniaturaModel {
   const MiniaturaModel({required this.url, required this.spoiler});
 
   factory MiniaturaModel.fromJson(Map<String, dynamic> json) {
-    return MiniaturaModel(
-      url: json['url'],
-      spoiler: json['spoiler'],
-    );
+    return MiniaturaModel(url: json['url'], spoiler: json['spoiler']);
   }
 }
- 
+
 class Banderas {
-final bool esSticky;
- final bool tieneEncuesta;
- final bool dadosActivado;
- final bool idUnicoActivado;
+  final bool esSticky;
+  final bool tieneEncuesta;
+  final bool dadosActivado;
+  final bool idUnicoActivado;
 
   const Banderas({
     required this.esSticky,

@@ -165,7 +165,7 @@ class ColorComentario extends StatelessWidget {
               padding: EdgeInsets.all(2),
               child: FittedBox(
                 child: Text(
-                  "ANON",
+                  label,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -179,7 +179,7 @@ class ColorComentario extends StatelessWidget {
     );
   }
 
-  String get label => comentario.dados ?? (comentario.esOp ? " OP" : "ANON");
+  String get label => comentario.dados ?? (comentario.esOp ? "OP" : comentario.autorRole);
 }
 
 class ComentarioSkeleton extends StatelessWidget {

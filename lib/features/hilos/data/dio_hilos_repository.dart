@@ -87,14 +87,17 @@ class DioHilosRepository extends IHilosRepository {
     String hilo, {
     required String comentario,
     PickedFile? file,
-  })async {
+  }) async {
     var form = FormData.fromMap({
       "texto": comentario,
-      "file": file != null ?await  MultipartFile.fromFile(file.source) : null,
+      "file": file != null ? await MultipartFile.fromFile(file.source) : null,
     });
 
-     try {
-      var response = await dio.post("comentarios/comentar-hilo/$hilo", data: form);
+    try {
+      var response = await dio.post(
+        "comentarios/comentar-hilo/$hilo",
+        data: form,
+      );
 
       if (response.isFailure) return Left(response.toFailure);
 
@@ -103,17 +106,25 @@ class DioHilosRepository extends IHilosRepository {
       return Left(e.toFailure);
     }
   }
-  
-  @override
-  Future<Either<Failure, Unit>> postear({required String titulo, required String descripcion, required String subcategoria, required List<String> encuesta, required bool spoiler, required PickedFile portada, required bool dados, required bool idUnico})  async{
 
+  @override
+  Future<Either<Failure, Unit>> postear({
+    required String titulo,
+    required String descripcion,
+    required String subcategoria,
+    required List<String> encuesta,
+    required bool spoiler,
+    required PickedFile portada,
+    required bool dados,
+    required bool idUnico,
+  }) async {
     var form = FormData.fromMap({
       "titulo": titulo,
       "descripcion": descripcion,
       "subcategoria": subcategoria,
       "encuesta": encuesta,
       "spoiler": spoiler,
-      "portada":await MultipartFile.fromFile(portada.source),
+      "portada": await MultipartFile.fromFile(portada.source),
       "dados": dados,
       "idUnico": idUnico,
     });
@@ -124,14 +135,13 @@ class DioHilosRepository extends IHilosRepository {
       if (response.isFailure) return Left(response.toFailure);
 
       return Right(unit);
-      
     } on Exception catch (e) {
       return Left(e.toFailure);
     }
   }
-  
+
   @override
-  Future<Either<Failure, Unit>> establecerSticky(String hilo)async {
+  Future<Either<Failure, Unit>> establecerSticky(String hilo) async {
     try {
       var response = await dio.post("hilos/establecer-sticky/$hilo");
 
@@ -142,9 +152,9 @@ class DioHilosRepository extends IHilosRepository {
       return Left(e.toFailure);
     }
   }
-  
+
   @override
-  Future<Either<Failure, Unit>> eliminarSticky(String hilo)async {
+  Future<Either<Failure, Unit>> eliminarSticky(String hilo) async {
     try {
       var response = await dio.post("hilos/eliminar-sticky/$hilo");
 
@@ -155,9 +165,9 @@ class DioHilosRepository extends IHilosRepository {
       return Left(e.toFailure);
     }
   }
-  
+
   @override
-  Future<Either<Failure, Unit>> eliminar(String hilo) async{
+  Future<Either<Failure, Unit>> eliminar(String hilo) async {
     try {
       var response = await dio.delete("hilos/eliminar/$hilo");
 
@@ -167,5 +177,44 @@ class DioHilosRepository extends IHilosRepository {
     } on Exception catch (e) {
       return Left(e.toFailure);
     }
-  } 
+  }
+
+  @override
+  Future<Either<Failure, Unit>> establecerFavorito(String hilo) async {
+    try {
+      var response = await dio.post("hilos/colecciones/favaoritos/poner-en-favorito/$hilo");
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      return Right(unit);
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> ocultar(String hilo) async {
+    try {
+      var response = await dio.post("hilos/colecciones/ocultos/ocultar/$hilo");
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      return Right(unit);
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> seguir(String hilo) async {
+    try {
+      var response = await dio.post("hilos/colecciones/seguidos/seguir/$hilo");
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      return Right(unit);
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  }
 }

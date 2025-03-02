@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
-import 'package:inkboard/features/hilos/presentation/pages/hilo_page.dart';
 
 class ResponsiveLayoutDialog extends StatelessWidget {
   final Widget child;

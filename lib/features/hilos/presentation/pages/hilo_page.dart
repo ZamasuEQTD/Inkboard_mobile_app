@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
+import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/presentation/logic/controllers/hilo_page_controller.dart';
@@ -17,6 +18,7 @@ import 'package:inkboard/features/media/domain/models/picked_file.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
+import 'package:popover/popover.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -220,28 +222,36 @@ class HiloBody extends StatelessWidget {
           borderRadius: hiloSectionRadius,
           child: ColoredBox(
             color: Theme.of(context).colorScheme.surface,
-            child: Row(
-              spacing: 4,
-              children: [
-                IconButton(onPressed: Get.back, icon: Icon(Icons.chevron_left)),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: SizedBox.square(
-                    dimension: 30,
-                    child: Image(image: NetworkImage(hilo.subcategoria.imagen)),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Row(
+                spacing: 4,
+                children: [
+                  IconButton(
+                    onPressed: Get.back,
+                    icon: Icon(Icons.chevron_left),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    hilo.subcategoria.nombre,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: CupertinoColors.link,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox.square(
+                      dimension: 30,
+                      child: Image(
+                        image: NetworkImage(hilo.subcategoria.imagen),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      hilo.subcategoria.nombre,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: CupertinoColors.link,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ).marginOnly(bottom: 10),
@@ -249,39 +259,45 @@ class HiloBody extends StatelessWidget {
           borderRadius: hiloSectionRadius,
           child: ColoredBox(
             color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(spacing: 4, children: acciones),
-                Row(
-                  spacing: 3.5,
-                  children: [
-                    Text(
-                      hilo.autor,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(spacing: 4, children: acciones),
+                  Row(
+                    spacing: 3.5,
+                    children: [
+                      Text(
+                        hilo.autor,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    Chip(
-                      labelPadding: EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 4,
+                      Chip(
+                        labelPadding: EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 4,
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 4,
+                        ),
+                        backgroundColor: Colors.grey.shade400,
+                        label: Text(
+                          hilo.autorRole,
+                          style: TextStyle(fontSize: 12, color: Colors.white),
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 4),
-                      backgroundColor: Colors.grey.shade400,
-                      label: Text(
-                        hilo.autorRole,
-                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      Text(
+                        hilo.createdAt.tiempoTranscurrido,
+                        style: TextStyle(fontSize: 12),
                       ),
-                    ),
-                    Text(
-                      hilo.createdAt.tiempoTranscurrido,
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ).marginOnly(right: 5),
-              ],
+                    ],
+                  ).marginOnly(right: 5),
+                ],
+              ),
             ),
           ),
         ).marginOnly(bottom: 10),
@@ -307,9 +323,25 @@ class HiloBody extends StatelessWidget {
   );
 
   List<Widget> get acciones => [
-    IconButton(onPressed: () {}, icon: Icon(Icons.star_outline)),
+    IconButton(
+      onPressed: () {
+        GetIt.I.get<IHilosRepository>().seguir(hilo.id);
+      },
+      icon: Icon(Icons.person_2_outlined),
+    ),
+     IconButton(
+      onPressed: () {
+        GetIt.I.get<IHilosRepository>().ocultar(hilo.id);
+      },
+      icon: Icon(Icons.visibility_off_outlined),
+    ),
     IconButton(onPressed: () {}, icon: Icon(Icons.flag_outlined)),
-    IconButton(onPressed: () {}, icon: Icon(Icons.star_outline)),
+    IconButton(
+      onPressed: () {
+        GetIt.I.get<IHilosRepository>().establecerFavorito(hilo.id);
+      },
+      icon: Icon(Icons.star_outline),
+    ),
   ];
 }
 
@@ -338,12 +370,41 @@ class _ComentarHiloState extends State<ComentarHilo> {
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
               children: [
-                IconButton(
-                  style: ButtonStyle(
-                    shape: WidgetStatePropertyAll(CircleBorder()),
-                  ),
-                  onPressed: () {},
-                  icon: Icon(Icons.more_vert),
+                Builder(
+                  builder:
+                      (context) => IconButton(
+                        style: ButtonStyle(
+                          shape: WidgetStatePropertyAll(CircleBorder()),
+                        ),
+                        onPressed: () {
+                          showPopover(
+                            context: context,
+                            width: 250,
+                            arrowWidth: 0,
+                            arrowHeight: 0,
+                            barrierColor: Colors.transparent,
+                            bodyBuilder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    title: Text("Agregar archivo"),
+                                    trailing: Icon(Icons.image),
+                                    onTap: () => controller.pickGaleriaFile(),
+                                  ),
+                                  ListTile(
+                                    title: Text("Agregar enlace"),
+                                    trailing: Icon(Icons.link),
+                                  ),
+                                ],
+                              );
+                            },
+                            radius: 15,
+                            direction: PopoverDirection.top,
+                          );
+                        },
+                        icon: Icon(Icons.more_vert),
+                      ),
                 ),
                 Flexible(
                   child: TextFormField(
@@ -357,8 +418,8 @@ class _ComentarHiloState extends State<ComentarHilo> {
                 ),
                 Obx(
                   () => IconButton(
-                  style: ButtonStyle(
-                    fixedSize: WidgetStatePropertyAll(Size.square(45)),
+                    style: ButtonStyle(
+                      fixedSize: WidgetStatePropertyAll(Size.square(45)),
                       iconColor: WidgetStatePropertyAll(
                         Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -367,7 +428,12 @@ class _ComentarHiloState extends State<ComentarHilo> {
                       ),
                     ),
                     onPressed: controller.comentar,
-                    icon: FittedBox(child: controller.comentandoHilo.value? CircularProgressIndicator(color: Colors.white, ):Icon(CupertinoIcons.paperplane_fill, size: 18),),
+                    icon: FittedBox(
+                      child:
+                          controller.comentandoHilo.value
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Icon(CupertinoIcons.paperplane_fill, size: 18),
+                    ),
                   ),
                 ),
               ],

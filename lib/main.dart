@@ -8,13 +8,14 @@ import 'package:inkboard/features/core/router.dart';
 import 'package:inkboard/shared/presentation/styles/theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
 
   GetIt.I.addDependencies();
 
-  Get.put(AuthController());
-
+  await Get.put(GetIt.I.get<AuthController>()).restaurarSesion();
+  
   runApp(const MyApp());
 }
 

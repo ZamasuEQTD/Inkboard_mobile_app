@@ -42,14 +42,8 @@ class AuthController extends GetxController {
 
   bool get esModerador => usuario.value?.roles.contains(Roles.moderador) ?? false;
   AuthenticatedUser get currentUser => usuario.value ?? (throw Exception('No está autenticado'));
-  @override
-  void onInit() async {
-    restaurarSesion();
 
-    super.onInit();
-  }
-
-  void restaurarSesion() async {
+  Future restaurarSesion() async {
     String? token = await _storage.recuperar();
 
     if (token == null) return;

@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
+import 'package:inkboard/features/moderacion/presentation/registros/registro_de_usuario.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/blur/blur.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/gradient_effect.dart';
 import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
@@ -114,7 +115,9 @@ class PortadaItem extends StatelessWidget {
                                         ),
                                         ListTile(
                                           title: Text("Seguir"),
-                                          trailing: Icon(Icons.visibility_off),
+                                          trailing: Icon(
+                                            Icons.person_3_outlined,
+                                          ),
                                         ),
 
                                         if (auth.authenticado &&
@@ -122,8 +125,9 @@ class PortadaItem extends StatelessWidget {
                                           ListTile(
                                             title: Text("Ver usuario"),
                                             trailing: Icon(
-                                              Icons.visibility_off,
+                                              Icons.person_2_outlined,
                                             ),
+                                            onTap: () => showDialog(context: context, builder: (context) => RegistroDeUsuarioModeradorPanel(usuario: portada.autorId!)),
                                           ),
                                           ListTile(
                                             onTap:
@@ -154,9 +158,7 @@ class PortadaItem extends StatelessWidget {
                                               onTap: () {
                                                 GetIt.I
                                                     .get<IHilosRepository>()
-                                                    .establecerSticky(
-                                                      portada.id,
-                                                    );
+                                                    .eliminarSticky(portada.id);
                                               },
                                             ),
                                         ],
