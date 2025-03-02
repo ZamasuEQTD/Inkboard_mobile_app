@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppLightColors {
@@ -15,7 +16,8 @@ class AppLightColors {
 
   static final onError = Colors.white;
 
+  static final error  = CupertinoColors.destructiveRed;
+  
   static final secondary = Colors.grey.shade200;
 
-  static final error  = primary;
 }

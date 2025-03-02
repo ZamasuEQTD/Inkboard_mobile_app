@@ -11,13 +11,22 @@ import 'package:inkboard/features/core/presentation/utils/network/client.dart';
 import 'package:inkboard/features/hilos/data/dio_hilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/media/data/file_picker_service.dart';
+import 'package:inkboard/features/media/data/minatura_service.dart';
 import 'package:inkboard/features/media/domain/ifile_picker_service.dart';
+import 'package:inkboard/features/media/domain/iminiatura_service.dart';
+import 'package:inkboard/features/moderacion/data/dio_baneos_repository.dart';
 import 'package:inkboard/features/moderacion/data/dio_registro_repository.dart';
+import 'package:inkboard/features/moderacion/domain/ibaneos_repository.dart';
 import 'package:inkboard/features/moderacion/domain/iregistro_repository.dart';
 
-
 extension DependencyInjection on GetIt {
-  GetIt addDependencies(){
+  GetIt addDependencies() {
+    registerLazySingleton(() => VideoCompressMiniaturaGenerador());
+    registerLazySingleton(() => YoutubeMiniaturaService());
+    registerLazySingleton(() => ImagenMiniaturaService());
+
+    registerLazySingleton<IMiniaturaFactory>(() => GetItMiniaturaFactory());
+
     registerSingleton(httpClient);
 
     registerLazySingleton(() => AuthController());
@@ -31,8 +40,10 @@ extension DependencyInjection on GetIt {
 
     registerLazySingleton<ITokenDecoder>(() => TokenDecoder());
 
+    registerLazySingleton<IBaneosRepository>(() => DioBaneosRepository());
+
     registerSingleton<IHilosRepository>(DioHilosRepository());
-    
+
     return this;
   }
 }

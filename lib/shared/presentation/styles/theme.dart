@@ -28,7 +28,6 @@ class AppThemes {
   const AppThemes._();
 
   static final ThemeData _default = ThemeData(
-
     extensions: [],
     fontFamily: "Poppins",
     iconButtonTheme: IconButtonThemeData(
@@ -52,13 +51,16 @@ class AppThemes {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(style: defaultButtonStyle),
     elevatedButtonTheme: ElevatedButtonThemeData(style: defaultButtonStyle),
+    textTheme: TextTheme(
+      labelMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    ),
   );
 
   static final ThemeData light = _default.copyWith(
     colorScheme: ColorScheme.light(
       surface: AppLightColors.surface,
       secondary: AppLightColors.secondary,
-      onSurface:  AppLightColors.onSurface,
+      onSurface: AppLightColors.onSurface,
       primary: AppLightColors.primary,
       onPrimary: AppLightColors.onPrimary,
       error: AppLightColors.error,

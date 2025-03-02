@@ -1,14 +1,33 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 
+class DialogStyle {
+  final double? width;
+  final double? height;
+
+  const DialogStyle({this.width, this.height});
+}
+
+enum SmTarget { fullscreen, bottomsheet }
+
 class ResponsiveLayoutDialog extends StatelessWidget {
   final Widget child;
 
-  final String? title;
+  final SmTarget smTarget;
 
-  const ResponsiveLayoutDialog({super.key, required this.child, this.title});
+  final String? title;
+  final DialogStyle? style;
+  final bool showAppbar;
+
+  const ResponsiveLayoutDialog({
+    super.key,
+    required this.child,
+    this.smTarget = SmTarget.fullscreen,
+    this.showAppbar = true,
+    this.title,
+    this.style,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,23 +35,35 @@ class ResponsiveLayoutDialog extends StatelessWidget {
       builder: (context) {
         Widget child = Column(
           mainAxisSize: MainAxisSize.min,
-          children: [DialogTitle(title: title), Flexible(child: this.child)],
+          children: [
+            if (showAppbar) DialogTitle(title: title),
+            Flexible(child: this.child),
+          ],
         ).paddingOnly(bottom: 10);
 
         if (context.isLargerThanMd) {
-          return LargerThanMdDialog(child: child);
+          return LargerThanMdDialog(dialogStyle: style, child: child);
+        }
+
+        if (smTarget == SmTarget.bottomsheet) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (context) => this.child,
+          );
         }
 
         return Dialog.fullscreen(child: child);
       },
     );
-  }
+  }  
 }
 
 class LargerThanMdDialog extends StatelessWidget {
   final Widget child;
 
-  const LargerThanMdDialog({super.key, required this.child});
+  final DialogStyle? dialogStyle;
+
+  const LargerThanMdDialog({super.key, required this.child, this.dialogStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +74,7 @@ class LargerThanMdDialog extends StatelessWidget {
       child: Dialog(
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: SizedBox(width: 600, child: child),
+        child: SizedBox(width: dialogStyle?.width ?? 600, child: child),
       ),
     );
   }
@@ -58,7 +89,7 @@ class DialogTitle extends StatelessWidget {
     return AppBar(
       leading: IconButton(
         onPressed: () => Get.back(),
-        icon: Icon(Icons.chevron_left_sharp, size: 30, color: Colors.black),
+        icon: Icon(Icons.chevron_left_sharp, size: 30),
       ),
       title:
           title != null
