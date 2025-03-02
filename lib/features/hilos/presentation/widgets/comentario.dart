@@ -10,6 +10,7 @@ import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/shared/presentation/util/color_picker.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/animated_gradient.dart';
+import 'package:popover/popover.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../logic/controllers/hilo_page_controller.dart';
@@ -60,7 +61,7 @@ class ComentarioWidget extends StatelessWidget {
                         children: [
                           Text(comentario.createdAt.tiempoTranscurrido),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {                            },
                             icon: Icon(Icons.more_vert),
                           ),
                         ],

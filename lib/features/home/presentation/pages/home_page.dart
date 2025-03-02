@@ -48,8 +48,13 @@ class _HomePageState extends State<HomePage> {
                     child: RichText(
                       text: TextSpan(
                         text: "Bienvenido ",
-                        children: [TextSpan(text: this.auth.currentUser.username ,style: TextStyle(fontWeight: FontWeight.bold))],
-                        style: TextStyle(color: Colors.black, fontSize: 16)
+                        children: [
+                          TextSpan(
+                            text: this.auth.currentUser.username,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                        style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                     ),
                   ).marginSymmetric(vertical: 10),
@@ -161,7 +166,8 @@ class _HomePageState extends State<HomePage> {
                         (child) => MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: GestureDetector(
-                            onTap: () => Get.toNamed("/hilo/${child.portada.id}"),
+                            onTap:
+                                () => Get.toNamed("/hilo/${child.portada.id}"),
                             child: child,
                           ),
                         ),

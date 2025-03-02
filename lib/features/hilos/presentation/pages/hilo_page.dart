@@ -13,9 +13,11 @@ import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/presentation/logic/controllers/hilo_page_controller.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/comentario.dart';
+import 'package:inkboard/features/media/domain/iminiatura_service.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
+import 'package:inkboard/features/media/presentation/widgets/miniatura/picked_media_miniatura.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
 import 'package:popover/popover.dart';
@@ -329,7 +331,7 @@ class HiloBody extends StatelessWidget {
       },
       icon: Icon(Icons.person_2_outlined),
     ),
-     IconButton(
+    IconButton(
       onPressed: () {
         GetIt.I.get<IHilosRepository>().ocultar(hilo.id);
       },
@@ -365,7 +367,7 @@ class _ComentarHiloState extends State<ComentarHilo> {
       child: AutenticacionRequeridaButton(
         child: Column(
           children: [
-            if (controller.hayMediaSeleccionada) Row(children: medias),
+            if (controller.hayMediaSeleccionada) Obx(() => Row(children: medias)),
             Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
@@ -444,7 +446,9 @@ class _ComentarHiloState extends State<ComentarHilo> {
     );
   }
 
-  List<Widget> get medias => [];
+  List<Widget> get medias => [
+    ...controller.files.map((f) => PickedMediaMiniatura(media: f)),
+  ];
 }
 
 class HiloBodySkeleton extends StatelessWidget {
@@ -530,55 +534,4 @@ class HiloBodySkeleton extends StatelessWidget {
       ],
     ).paddingSymmetric(horizontal: 10);
   }
-}
-
-abstract class IMiniaturaFactory {
-  IMiniaturaService create(MediaProvider provider);
-}
-
-abstract class IMiniaturaService {
-  Future<ImageProvider> generar(PickedFile media);
-}
-
-class PickedMediaMiniatura extends StatefulWidget {
-  final PickedFile media;
-
-  const PickedMediaMiniatura({super.key, required this.media});
-
-  @override
-  State<PickedMediaMiniatura> createState() => _PickedMediaMiniaturaState();
-}
-
-class _PickedMediaMiniaturaState extends State<PickedMediaMiniatura> {
-  final Rx<ImageProvider?> miniatura = Rx(null);
-
-  final IMiniaturaFactory _factory = GetIt.I.get();
-
-  @override
-  void initState() {
-    _factory.create(widget.media.provider).generar(widget.media).then((value) {
-      miniatura.value = value;
-    });
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox.square(
-        dimension: 80,
-        child: Obx(() {
-          if (miniaturaGenerada) {
-            return Image(image: miniatura.value!, fit: BoxFit.cover);
-          }
-
-          return CircularProgressIndicator();
-        }),
-      ),
-    );
-  }
-
-  bool get miniaturaGenerada => miniatura.value != null;
 }
