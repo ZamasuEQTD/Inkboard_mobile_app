@@ -5,10 +5,13 @@ import 'package:inkboard/features/auth/presentation/logic/controllers/auth_contr
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/auth/presentation/widgets/login_dialog.dart';
 import 'package:inkboard/features/auth/presentation/widgets/registro_dialog.dart';
+import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/portadas-grid/portadas_grid.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
 import 'package:inkboard/features/home/presentation/logic/controllers/home_page_controller.dart';
+import 'package:inkboard/features/notificaciones/presentation/widgets/notificaciones.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
+import 'package:popover/popover.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -128,32 +131,7 @@ class _HomePageState extends State<HomePage> {
           CustomScrollView(
             controller: scroll,
             slivers: [
-              SliverAppBar(
-                pinned: true,
-                title: GestureDetector(
-                  onTap: () => Get.toNamed("/"),
-                  child: Text(
-                    "Inkboard",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ),
-                actions: [
-                  Builder(
-                    builder:
-                        (context) => IconButton(
-                          onPressed: () => Scaffold.of(context).openEndDrawer(),
-                          icon: SizedBox.square(
-                            dimension: 40,
-                            child: Icon(Icons.menu),
-                          ),
-                        ),
-                  ),
-                ],
-              ),
+              HomeAppBar(),
               Obx(
                 () => SliverPadding(
                   padding: EdgeInsets.symmetric(
@@ -198,6 +176,50 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class HomeAppBar extends StatelessWidget {
+  const HomeAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var auth = Get.find<AuthController>();
+    return SliverAppBar(
+      clipBehavior: Clip.none,
+      pinned: true,
+      title: GestureDetector(
+        onTap: () => Get.toNamed("/"),
+        child: Text(
+          "Inkboard",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.6,
+          ),
+        ),
+      ),
+      actions: [
+        Obx(
+          () =>
+              auth.authenticado
+                  ? IconButton(
+                    onPressed: () {
+                      showDialog(context: context, builder: (context) => MisNotificacionesLayout());
+                    },
+                    icon: Icon(Icons.notifications_outlined),
+                  )
+                  : SizedBox(),
+        ),
+        Builder(
+          builder:
+              (context) => IconButton(
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+                icon: SizedBox.square(dimension: 40, child: Icon(Icons.menu)),
+              ),
+        ),
+      ],
     );
   }
 }

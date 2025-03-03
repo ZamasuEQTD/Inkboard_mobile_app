@@ -360,7 +360,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
           maxLines: 2,
           decoration: InputDecoration(
             hintText: "Enlace",
-            suffix: IconButton(onPressed: () {}, icon: Icon(Icons.link)),
+            suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.link)).paddingAll(2),
           ),
         ).marginOnly(top: 10),
       ],
