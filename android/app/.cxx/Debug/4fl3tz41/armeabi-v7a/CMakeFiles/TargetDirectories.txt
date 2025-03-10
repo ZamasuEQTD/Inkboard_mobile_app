@@ -1,0 +1,2 @@
+C:/Users/franco/Desktop/Inkboard_mobile_app/android/app/.cxx/Debug/4fl3tz41/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/franco/Desktop/Inkboard_mobile_app/android/app/.cxx/Debug/4fl3tz41/armeabi-v7a/CMakeFiles/rebuild_cache.dir
