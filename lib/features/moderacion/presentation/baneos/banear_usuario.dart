@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/core/presentation/widgets/dialog/dialog_responsive.dart';
 import 'package:inkboard/features/moderacion/domain/ibaneos_repository.dart';
 import 'package:inkboard/features/moderacion/domain/models/baneos.dart';
