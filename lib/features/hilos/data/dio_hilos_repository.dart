@@ -11,6 +11,7 @@ import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
+import 'package:http_parser/http_parser.dart';
 
 class DioHilosRepository extends IHilosRepository {
   final Dio dio = GetIt.I.get();
@@ -108,7 +109,7 @@ class DioHilosRepository extends IHilosRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> postear({
+  Future<Either<Failure, String>> postear({
     required String titulo,
     required String descripcion,
     required String subcategoria,
@@ -124,7 +125,10 @@ class DioHilosRepository extends IHilosRepository {
       "subcategoria": subcategoria,
       "encuesta": encuesta,
       "spoiler": spoiler,
-      "portada": await MultipartFile.fromFile(portada.source),
+      "file": await MultipartFile.fromFile(
+        portada.source,
+        contentType: MediaType.parse(portada.contentType),
+      ),
       "dados": dados,
       "idUnico": idUnico,
     });
@@ -134,7 +138,7 @@ class DioHilosRepository extends IHilosRepository {
 
       if (response.isFailure) return Left(response.toFailure);
 
-      return Right(unit);
+      return Right(response.data["data"]);
     } on Exception catch (e) {
       return Left(e.toFailure);
     }
@@ -182,7 +186,9 @@ class DioHilosRepository extends IHilosRepository {
   @override
   Future<Either<Failure, Unit>> establecerFavorito(String hilo) async {
     try {
-      var response = await dio.post("hilos/colecciones/favaoritos/poner-en-favorito/$hilo");
+      var response = await dio.post(
+        "hilos/colecciones/favaoritos/poner-en-favorito/$hilo",
+      );
 
       if (response.isFailure) return Left(response.toFailure);
 
