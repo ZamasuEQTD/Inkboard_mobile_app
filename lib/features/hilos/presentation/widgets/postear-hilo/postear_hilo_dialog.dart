@@ -3,9 +3,16 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/widgets/login_dialog.dart';
+import 'package:inkboard/features/categorias/domain/icategorias_repository.dart';
+import 'package:inkboard/features/categorias/domain/models/categoria.dart';
+import 'package:inkboard/features/categorias/domain/models/subcategoria.dart';
+import 'package:inkboard/features/categorias/presentation/widgets/seleccionar_subcategoria.dart';
+import 'package:inkboard/features/core/domain/models/failure.dart';
 import 'package:inkboard/features/core/presentation/widgets/dialog/dialog_responsive.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
+import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/presentation/pages/hilo_page.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
@@ -66,142 +73,97 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
         padding: EdgeInsets.only(bottom: 10),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15,
-            ).copyWith(bottom: 10),
+            padding: EdgeInsets.symmetric(horizontal: 15).copyWith(bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Titulo",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 TextFormField(
                   decoration: InputDecoration(hintText: "Titulo"),
+                  controller: postearHiloController.titulo,
                 ),
                 PostearHiloDialog.marginSection,
                 Text(
                   "Descripcion",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 TextFormField(
                   minLines: 5,
                   maxLines: 5,
                   decoration: InputDecoration(hintText: "Descripción"),
+                  controller: postearHiloController.descripcion,
+                ),
+                PostearHiloDialog.marginSection,
+                Text(
+                  "Subcategoria",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    Get.bottomSheet(
+                      BottomSheet(
+                        onClosing: () {},
+                        builder:
+                            (context) => SeleccionarSubcategoriasBottomSheet(
+                              onSubcategoriaSeleccionada: (subcategoria) {
+                                postearHiloController.subcategoria.value =
+                                    subcategoria;
+                                Get.back();
+                              },
+                            ).paddingSymmetric(vertical: 10),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (postearHiloController.haySubcategoriaSeleccionada)
+                        Row(
+                          spacing: 10,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: SizedBox.square(
+                                dimension: 40,
+                                child: Image.network(
+                                  postearHiloController
+                                      .subcategoria
+                                      .value!
+                                      .imagen,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              postearHiloController.subcategoria.value!.nombre,
+                            ),
+                          ],
+                        )
+                      else
+                        Text("Seleccionar subcategoria"),
+
+                      Icon(Icons.chevron_right),
+                    ],
+                  ),
                 ),
                 PostearHiloDialog.marginSection,
                 Text(
                   "Portada",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 //---portada---
                 if (!postearHiloController.hayPortadaSeleccionada)
                   _sinPortadaSeleccionadaWidget()
                 else
-                  Center(
-                    child: MediaBox(
-                      style: DimensionableStyle(
-                        constraints: BoxConstraints(maxHeight: 450),
-                      ),
-                      builder: (context, dimensionable) {
-                        return Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Stack(
-                                children: [
-                                  dimensionable,
-                                  Positioned.fill(
-                                    child: ClipRect(
-                                      child: Blur(
-                                        blurear:
-                                            postearHiloController
-                                                .pickedFile
-                                                .value!
-                                                .spoiler,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: -20,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Material(
-                                  elevation: 10,
-                                  child: ColoredBox(
-                                    color: Colors.white,
-                                    child: Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed:
-                                              postearHiloController
-                                                  .switchSpoiler,
-                                          icon: Obx(
-                                            () =>
-                                                !postearHiloController
-                                                        .isSpoiler
-                                                    ? Icon(
-                                                      Icons
-                                                          .visibility_off,
-                                                    )
-                                                    : Icon(
-                                                      Icons.visibility,
-                                                    ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            postearHiloController
-                                                .pickedFile
-                                                .value = null;
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.redAccent,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      media: MediaSource(
-                        source: MediaSourceType.file,
-                        model:
-                            this
-                                .postearHiloController
-                                .pickedFile
-                                .value!
-                                .value
-                                .toMediaModel(),
-                      ),
-                    ),
-                  ).marginOnly(top: 10),
+                  portadaSeleccionada().marginOnly(top: 10),
                 PostearHiloDialog.marginSection,
                 Text(
                   "Encuesta",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 if (!postearHiloController.hayEncuesta)
                   SizedBox(
@@ -217,17 +179,16 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                 PostearHiloDialog.marginSection,
                 Text(
                   "Banderas",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 _banderasWidget(),
                 PostearHiloDialog.marginSection,
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      postearHiloController.postear();
+                    },
                     child: Text("Postear"),
                   ),
                 ),
@@ -238,9 +199,80 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
       );
     });
 
-    return ResponsiveLayoutDialog(
-      title: "Postear hilo",
-      child: child,
+    return ResponsiveLayoutDialog(title: "Postear hilo", child: child);
+  }
+
+  Center portadaSeleccionada() {
+    return Center(
+      child: MediaBox(
+        style: DimensionableStyle(constraints: BoxConstraints(maxHeight: 450)),
+        builder: (context, dimensionable) {
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClipRRect(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                borderRadius: BorderRadius.circular(10),
+                child: Stack(
+                  children: [
+                    dimensionable,
+                    Positioned.fill(
+                      child: Blur(
+                        blurear:
+                            postearHiloController.pickedFile.value!.spoiler,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              opcionesDePortada(),
+            ],
+          );
+        },
+        media: MediaSource(
+          source: MediaSourceType.file,
+          model: postearHiloController.pickedFile.value!.value.toMediaModel(),
+        ),
+      ),
+    );
+  }
+
+  Positioned opcionesDePortada() {
+    return Positioned(
+      right: -20,
+      top: -20,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Material(
+          elevation: 120,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Colors.grey.shade300, width: 0.5),
+          ),
+          child: ColoredBox(
+            color: Colors.white,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: postearHiloController.switchSpoiler,
+                  icon: Obx(
+                    () =>
+                        !postearHiloController.isSpoiler
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    postearHiloController.pickedFile.value = null;
+                  },
+                  icon: Icon(Icons.delete, color: Colors.redAccent),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -360,7 +392,10 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
           maxLines: 2,
           decoration: InputDecoration(
             hintText: "Enlace",
-            suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.link)).paddingAll(2),
+            suffixIcon: IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.link),
+            ).paddingAll(2),
           ),
         ).marginOnly(top: 10),
       ],

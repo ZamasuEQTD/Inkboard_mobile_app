@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/categorias/domain/models/subcategoria.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
@@ -25,11 +26,10 @@ class Spoileable<T> extends Equatable {
 }
 
 class PostearHiloController extends GetxController {
-  final titulo =TextEditingController();
+  final titulo = TextEditingController();
   final descripcion = TextEditingController();
 
-
-  final Rx<SubcategoriaModel?> subcategoria =Rx(null);
+  final Rx<SubcategoriaModel?> subcategoria = Rx(null);
 
   final dados = false.obs;
   final idUnico = false.obs;
@@ -56,31 +56,41 @@ class PostearHiloController extends GetxController {
     encuesta.refresh();
   }
 
- 
-
   void switchSpoiler() {
-     pickedFile.value =  pickedFile.value!.copyWith(
-      spoiler: !isSpoiler,
-    );
+    pickedFile.value = pickedFile.value!.copyWith(spoiler: !isSpoiler);
   }
 
-  void agregarPortada(PickedFile file){
+  void agregarPortada(PickedFile file) {
     pickedFile.value = Spoileable(spoiler: false, value: file);
   }
 
-  void eliminarPortada(){
+  void eliminarPortada() {
     pickedFile.value = null;
   }
 
-  void postear()async{
-    
-    if(isPosteando)return;
-    
+  void postear() async {
+    if (isPosteando) return;
+
     posteando.value = true;
 
-    await _repository.postear(titulo: titulo.text, descripcion: descripcion.text, subcategoria: subcategoria.value!.id,dados: dados.value, encuesta: encuesta.map((o)=> o.text).toList(),idUnico: idUnico.value,spoiler: this.isSpoiler,portada: this.pickedFile.value!.value);
-   
+    var result = await _repository.postear(
+      titulo: titulo.text,
+      descripcion: descripcion.text,
+      subcategoria: subcategoria.value!.id,
+      dados: dados.value,
+      encuesta: encuesta.map((o) => o.text).toList(),
+      idUnico: idUnico.value,
+      spoiler: isSpoiler,
+      portada: pickedFile.value!.value,
+    );
+
     posteando.value = false;
+
+    result.fold((l) {}, (r) {
+      Get.back();
+
+      Get.toNamed("hilo/$r");
+    });
   }
 
   bool get isPosteando => posteando.value;
@@ -88,4 +98,5 @@ class PostearHiloController extends GetxController {
   bool get hayPortadaSeleccionada => pickedFile.value != null;
   bool get puedeAgregarOpcionDeEncuesta => encuesta.length < 4;
   bool get isSpoiler => pickedFile.value!.spoiler;
+  bool get haySubcategoriaSeleccionada => subcategoria.value != null;
 }
