@@ -4,12 +4,18 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
+import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
+import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/shared/presentation/util/color_picker.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/animated_gradient.dart';
+import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
+import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:popover/popover.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -25,66 +31,142 @@ class ComentarioWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        ClipRRect(
-          borderRadius: comentarioRadius,
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.secondary,
-            child: Padding(
-              padding: comentarioPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 4,
-                          children: [
-                            ColorComentario(comentario: comentario),
-                            Flexible(
-                              child: Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 4,
-                                runSpacing: 4,
-                                children: tags,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(comentario.createdAt.tiempoTranscurrido),
-                          IconButton(
-                            onPressed: () {                            },
-                            icon: Icon(Icons.more_vert),
+    return GestureDetector(
+      onLongPress:
+          () => Get.bottomSheet(
+            BottomSheet(
+              onClosing: () {},
+              builder:
+                  (context) => GrupoSeleccionableSliverSheet(
+                    grupos: [
+                      GrupoSeleccionableItem(
+                        seleccionables: [
+                          SeleccionableItem(
+                            titulo: "Reportar",
+                            leading: Icon(Icons.flag_outlined),
+                          ),
+                          SeleccionableItem(
+                            titulo: "Ocultar",
+                            leading: Icon(Icons.visibility_off_outlined),
                           ),
                         ],
                       ),
+                      if (Get.find<HiloPageController>().hilo.value!.esOp)
+                        GrupoSeleccionableItem(
+                          seleccionables: [
+                            SeleccionableItem(
+                              titulo:
+                                  comentario.destacado
+                                      ? "Dejar de destacar"
+                                      : "Destacar",
+                              onTap:
+                                  () => GetIt.I
+                                      .get<IComentariosRepository>()
+                                      .destacar(
+                                        comentario.id,
+                                        Get.find<HiloPageController>()
+                                            .hilo
+                                            .value!
+                                            .id,
+                                      ),
+                              leading:
+                                  comentario.destacado
+                                      ? Icon(Icons.star)
+                                      : Icon(Icons.star_border),
+                            ),
+                          ],
+                        ),
+                      if (comentario.esAutor)
+                        GrupoSeleccionableItem(
+                          seleccionables: [
+                            SeleccionableItem(
+                              titulo:
+                                  comentario.recibirNotificaciones!
+                                      ? "Desactivar notificaciones"
+                                      : "Activar notificaciones",
+
+                              leading:
+                                  comentario.recibirNotificaciones!
+                                      ? Icon(Icons.notifications)
+                                      : Icon(Icons.notifications_off),
+                            ),
+                          ],
+                        ),
+                      if (Get.find<AuthController>().esModerador)
+                        GrupoSeleccionableItem(
+                          seleccionables: [
+                            SeleccionableItem(titulo: "Ver usuario"),
+                            SeleccionableItem(
+                              titulo: "Eliminar",
+                              onTap:
+                                  () => GetIt.I
+                                      .get<IComentariosRepository>()
+                                      .eliminar(
+                                        comentario.id,
+                                        Get.find<HiloPageController>()
+                                            .hilo
+                                            .value!
+                                            .id,
+                                      ),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
-                  Wrap(spacing: 2, runSpacing: 4, children: taggueadoPor),
-                  if (comentario.media != null) media,
-                  Text(comentario.texto),
-                ],
-              ),
             ),
           ),
-        ).marginSymmetric(vertical: 4),
-
-        // Positioned(
-        //   left: -25,
-        //   child: SizedBox.square(
-        //     dimension: 50,
-        //     child: ColoredBox(color: Colors.red),
-        //   ),
-        // ),
-      ],
+      child: ClipRRect(
+        borderRadius: comentarioRadius,
+        child: ColoredBox(
+          color: Theme.of(context).colorScheme.secondary,
+          child: Padding(
+            padding: comentarioPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 4,
+                      children: [
+                        ColorComentario(comentario: comentario),
+                        Flexible(
+                          child: DefaultTextStyle(
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                            child: Wrap(
+                              spacing: 2,
+                              runSpacing: 2,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: tags,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      comentario.createdAt.tiempoTranscurrido,
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                Wrap(spacing: 2, runSpacing: 4, children: taggueadoPor),
+                if (comentario.media != null) media,
+                Text(comentario.texto),
+              ],
+            ),
+          ),
+        ),
+      ).marginSymmetric(vertical: 4),
     );
   }
 
@@ -93,20 +175,20 @@ class ComentarioWidget extends StatelessWidget {
   }
 
   List<Widget> get tags => [
-    Text(comentario.autor, style: TextStyle(fontWeight: FontWeight.bold)),
-    if (comentario.esOp) Chip(label: Text("OP")),
+    Text(
+      comentario.autor,
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+    ),
+    if (comentario.esOp) Tag(label: Text("OP")),
     if (comentario.destacado)
-      Chip(backgroundColor: Colors.yellow.shade300, label: Text("Destacado")),
-    MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: _onTagguear,
-        child: Chip(label: Text(comentario.tag)),
-      ),
+      Tag(color: Colors.yellow.shade300, label: Text("Destacado")),
+    GestureDetector(
+      onTap: _onTagguear,
+      child: Tag(label: Text(comentario.tag)),
     ),
     if (comentario.tagUnico != null)
-      Chip(
-        backgroundColor: ColorPicker.generar(comentario.tagUnico!),
+      Tag(
+        color: ColorPicker.generar(comentario.tagUnico!),
         label: Text(
           comentario.tagUnico!,
           style: TextStyle(color: Colors.white),
@@ -117,9 +199,25 @@ class ComentarioWidget extends StatelessWidget {
   List<Widget> get taggueadoPor =>
       comentario.respondidoPor
           .map<Widget>(
-            (tag) => MouseRegion(
-              onEnter: (event) {},
-              onExit: (event) {},
+            (tag) => GestureDetector(
+              onTap: () {
+                HiloPageController c = Get.find<HiloPageController>();
+                Get.bottomSheet(
+                  BottomSheet(
+                    enableDrag: false,
+                    onClosing: () {},
+                    builder:
+                        (context) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ComentarioWidget(
+                              comentario: c.comentariosMap[tag]!,
+                            ),
+                          ],
+                        ).paddingSymmetric(horizontal: 15, vertical: 5),
+                  ),
+                );
+              },
               child: Text(
                 ">>$tag",
                 style: TextStyle(color: CupertinoColors.link, fontSize: 16),
@@ -163,7 +261,7 @@ class ColorComentario extends StatelessWidget {
           SizedBox.square(dimension: 50, child: color),
           Positioned.fill(
             child: Padding(
-              padding: EdgeInsets.all(2),
+              padding: EdgeInsets.all(7),
               child: FittedBox(
                 child: Text(
                   label,
@@ -180,7 +278,8 @@ class ColorComentario extends StatelessWidget {
     );
   }
 
-  String get label => comentario.dados ?? (comentario.esOp ? "OP" : comentario.autorRole);
+  String get label =>
+      comentario.dados ?? (comentario.esOp ? "OP" : comentario.autorRole);
 }
 
 class ComentarioSkeleton extends StatelessWidget {
