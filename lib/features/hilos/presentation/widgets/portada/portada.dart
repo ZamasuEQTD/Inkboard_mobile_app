@@ -60,7 +60,7 @@ class PortadaItem extends StatelessWidget {
                           children: [
                             Tag.text(
                               portada.subcategoria,
-                              background: Colors.green,
+                              color: Colors.green,
                               padding: EdgeInsets.symmetric(
                                 vertical: 2,
                                 horizontal: 4,
@@ -70,7 +70,7 @@ class PortadaItem extends StatelessWidget {
                             if (portada.esNuevo)
                               Tag.text(
                                 "Nuevo",
-                                background: Colors.purple.shade300,
+                                color: Colors.purple.shade300,
                                 padding: EdgeInsets.symmetric(
                                   vertical: 2,
                                   horizontal: 4,
@@ -127,7 +127,17 @@ class PortadaItem extends StatelessWidget {
                                             trailing: Icon(
                                               Icons.person_2_outlined,
                                             ),
-                                            onTap: () => showDialog(context: context, builder: (context) => RegistroDeUsuarioModeradorPanel(usuario: portada.autorId!)),
+                                            onTap:
+                                                () => showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (context) =>
+                                                          RegistroDeUsuarioModeradorPanel(
+                                                            usuario:
+                                                                portada
+                                                                    .autorId!,
+                                                          ),
+                                                ),
                                           ),
                                           ListTile(
                                             onTap:
@@ -234,7 +244,7 @@ class PortadaItemSkeleton extends StatelessWidget {
                     3,
                     (i) => Bone(
                       borderRadius: BorderRadius.circular(10),
-                      width: _random.nextInt(150) + 50,
+                      width: _random.nextInt(70) + 50,
                       height: 24,
                     ),
                   ),
@@ -262,8 +272,8 @@ class TagPortadaIcon extends StatelessWidget {
       child: FittedBox(
         child: Tag(
           padding: EdgeInsets.all(2),
-          background: background ?? Colors.blue,
-          child: icon,
+          color: background ?? Colors.blue,
+          label: icon,
         ),
       ),
     );
