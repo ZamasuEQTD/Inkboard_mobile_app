@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inkboard/shared/presentation/styles/colors.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-final defaultFlatInputBorder = new OutlineInputBorder(
+final defaultFlatInputBorder = OutlineInputBorder(
   borderSide: BorderSide.none, // Sin borde
   borderRadius: defaultBorderRadius,
 );
@@ -17,7 +17,7 @@ final defaultButtonStyle = ButtonStyle(
     TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
   ),
   padding: WidgetStatePropertyAll(
-    EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    EdgeInsets.symmetric(horizontal: 16, vertical: 12),
   ),
   shape: WidgetStatePropertyAll(
     RoundedRectangleBorder(borderRadius: defaultBorderRadius),
