@@ -1,3 +1,4 @@
+import 'package:inkboard/features/categorias/domain/models/subcategoria.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 
 class HiloModel {
@@ -40,10 +41,15 @@ class HiloModel {
       esOp: json['es_op'] as bool,
       cantidadComentarios: json['cantidad_comentarios'] as int,
       recibirNotificaciones: json['recibir_notificaciones'] as bool?,
-      subcategoria: SubcategoriaModel.fromJson(json['subcategoria'] as Map<String, dynamic>),
+      subcategoria: SubcategoriaModel.fromJson(
+        json['subcategoria'] as Map<String, dynamic>,
+      ),
       createdAt: DateTime.parse(json['created_at'] as String),
       media: MediaModel.fromJson(json['media'] as Map<String, dynamic>),
-      encuesta: json['encuesta'] != null ? EncuestaModel.fromJson(json['encuesta'] as Map<String, dynamic>) : null,
+      encuesta:
+          json['encuesta'] != null
+              ? EncuestaModel.fromJson(json['encuesta'] as Map<String, dynamic>)
+              : null,
       autorRole: json['autor_role'] as String,
       autor: json['autor'] as String,
     );
@@ -63,7 +69,13 @@ class EncuestaModel {
 
   factory EncuestaModel.fromJson(Map<String, dynamic> json) {
     var respuestasFromJson = json['respuestas'] as List;
-    List<RespuestaModel> respuestasList = respuestasFromJson.map((respuesta) => RespuestaModel.fromJson(respuesta as Map<String, dynamic>)).toList();
+    List<RespuestaModel> respuestasList =
+        respuestasFromJson
+            .map(
+              (respuesta) =>
+                  RespuestaModel.fromJson(respuesta as Map<String, dynamic>),
+            )
+            .toList();
 
     return EncuestaModel(
       id: json['id'] as String,
@@ -88,26 +100,6 @@ class RespuestaModel {
       id: json['id'] as String,
       respuesta: json['respuesta'] as String,
       votos: json['votos'] as int,
-    );
-  }
-}
-
-class SubcategoriaModel {
-  final String id;
-  final String nombre;
-  final String imagen;
-
-  const SubcategoriaModel({
-    required this.id,
-    required this.nombre,
-    required this.imagen,
-  });
-
-  factory SubcategoriaModel.fromJson(Map<String, dynamic> json) {
-    return SubcategoriaModel(
-      id: json['id'] as String,
-      nombre: json['nombre'] as String,
-      imagen: json['imagen'] as String,
     );
   }
 }

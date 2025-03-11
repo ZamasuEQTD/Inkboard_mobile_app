@@ -6,6 +6,8 @@ import 'package:inkboard/features/auth/domain/iauth_repository.dart';
 import 'package:inkboard/features/auth/domain/itoken_decoder.dart';
 import 'package:inkboard/features/auth/domain/itoken_storage.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
+import 'package:inkboard/features/categorias/data/dio_categoria_repository.dart';
+import 'package:inkboard/features/categorias/domain/icategorias_repository.dart';
 
 import 'package:inkboard/features/core/presentation/utils/network/client.dart';
 import 'package:inkboard/features/hilos/data/dio_hilos_repository.dart';
@@ -44,6 +46,9 @@ extension DependencyInjection on GetIt {
 
     registerSingleton<IHilosRepository>(DioHilosRepository());
 
+    registerSingleton<ICategoriasRepository>(DioCategoriaRepository());
+
+    registerSingleton<IComentariosRepository>(DioComentariosRepository());
     return this;
   }
 }
