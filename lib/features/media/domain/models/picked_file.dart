@@ -8,5 +8,10 @@ class PickedFile {
 
   final MediaProvider provider;
 
-  const PickedFile({required this.source, required this.provider});
+  final String contentType;
+  const PickedFile({
+    required this.source,
+    required this.provider,
+    required this.contentType,
+  });
 }

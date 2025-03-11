@@ -12,7 +12,7 @@ class FilePickerService extends IFilePickerService {
   @override
   Future<List<PickedFile>> pick({int cantidad = 1}) async {
     var files = await picker.pickFiles();
-    
+
     List<PickedFile> picked = [];
 
     if (files == null) {
@@ -22,12 +22,19 @@ class FilePickerService extends IFilePickerService {
     for (final PlatformFile file in files.files) {
       final String mime = lookupMimeType(file.path!)!.split("/")[0];
 
-      MediaProvider? provider =
-          MediaProvider.values.firstWhereOrNull((p) => p.name == mime.toLowerCase());
+      MediaProvider? provider = MediaProvider.values.firstWhereOrNull(
+        (p) => p.name == mime.toLowerCase(),
+      );
 
       provider ??= MediaProvider.other;
 
-      picked.add(PickedFile(source: file.path!, provider: provider));
+      picked.add(
+        PickedFile(
+          source: file.path!,
+          provider: provider,
+          contentType: lookupMimeType(file.path!)!,
+        ),
+      );
     }
 
     return picked;
