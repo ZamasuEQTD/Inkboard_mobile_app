@@ -45,7 +45,9 @@ class HiloPageController extends GetxController {
       var result = await _repository.getComentarios(hilo.value!.id);
 
       result.fold((l) {}, (r) {
-        r.comentarios.map((c) => comentariosMap[c.id] = c);
+        for (var c in r.comentarios) {
+          comentariosMap[c.tag] = c;
+        }
 
         destacados.value = r.destacados;
         comentarios.value = r.comentarios;
