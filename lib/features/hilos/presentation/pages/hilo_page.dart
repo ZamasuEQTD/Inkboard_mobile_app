@@ -38,7 +38,7 @@ class _HiloPageState extends State<HiloPage> {
 
   final GlobalKey key = GlobalKey();
 
-  late final ScrollController scroll = ScrollController();
+  final ScrollController scroll = ScrollController();
 
   final HashMap<String, Key> destacadosKeys = HashMap();
 
@@ -126,11 +126,13 @@ class _HiloPageState extends State<HiloPage> {
                         ),
                         child: ColoredBox(
                           color: Colors.grey.shade200,
-                          child: SafeArea(
-                            child:
-                                controller.hilo.value == null
-                                    ? HiloBodySkeleton()
-                                    : HiloBody(hilo: controller.hilo.value!),
+                          child: Obx(
+                            () => SafeArea(
+                              child:
+                                  controller.hilo.value == null
+                                      ? HiloBodySkeleton()
+                                      : HiloBody(hilo: controller.hilo.value!),
+                            ),
                           ),
                         ),
                       ),
@@ -266,7 +268,7 @@ class HiloBody extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(spacing: 4, children: acciones),
+                  Row(spacing: 1, children: acciones),
                   Row(
                     spacing: 3.5,
                     children: [
@@ -367,7 +369,8 @@ class _ComentarHiloState extends State<ComentarHilo> {
       child: AutenticacionRequeridaButton(
         child: Column(
           children: [
-            if (controller.hayMediaSeleccionada) Obx(() => Row(children: medias)),
+            if (controller.hayMediaSeleccionada)
+              Obx(() => Row(children: medias)),
             Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
