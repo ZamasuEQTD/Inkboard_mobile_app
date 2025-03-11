@@ -8,6 +8,8 @@ import 'package:inkboard/features/auth/domain/itoken_storage.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/categorias/data/dio_categoria_repository.dart';
 import 'package:inkboard/features/categorias/domain/icategorias_repository.dart';
+import 'package:inkboard/features/comentarios/data/dio_comentarios_repository.dart';
+import 'package:inkboard/features/comentarios/domain/icomentarios_repository.dart';
 
 import 'package:inkboard/features/core/presentation/utils/network/client.dart';
 import 'package:inkboard/features/hilos/data/dio_hilos_repository.dart';
