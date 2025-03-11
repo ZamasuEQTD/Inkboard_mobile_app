@@ -98,7 +98,22 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void initState() {
-    controller = ChewieController(videoPlayerController: video);
+    VideoPlayerController player;
+
+    switch (widget.provider is NetworkVideoProvider) {
+      case true:
+        player = VideoPlayerController.networkUrl(
+          Uri.parse((widget.provider as NetworkVideoProvider).url),
+        );
+        break;
+      case false:
+        player = VideoPlayerController.file(
+          (widget.provider as FileVideoProvider).file,
+        );
+        break;
+    }
+
+    controller = ChewieController(videoPlayerController: player);
 
     video.initialize().then((_) {
       setState(() {
@@ -125,7 +140,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           : CircularProgressIndicator();
 }
 
-
 class YoutubePlayerWidget extends StatefulWidget {
   final String url;
   const YoutubePlayerWidget({super.key, required this.url});
@@ -135,7 +149,6 @@ class YoutubePlayerWidget extends StatefulWidget {
 }
 
 class _YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
-
   late final YoutubePlayerController controller;
 
   @override
@@ -144,8 +157,12 @@ class _YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerScaffold(controller: controller,builder: (context, player) => player);
+    return YoutubePlayerScaffold(
+      controller: controller,
+      builder: (context, player) => player,
+    );
   }
 }
