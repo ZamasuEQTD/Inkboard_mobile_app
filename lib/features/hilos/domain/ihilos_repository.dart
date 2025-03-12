@@ -17,28 +17,27 @@ abstract class IHilosRepository {
 
   Future<Either<Failure, HiloModel>> getHilo(String hilo);
 
-  Future<Either<Failure,Unit>> comentar(String hilo, {
+  Future<Either<Failure, Unit>> comentar(
+    String hilo, {
     required String comentario,
-    PickedFile? file
+    PickedFile? file,
   });
 
-  
+  Future<Either<Failure, Unit>> establecerSticky(String hilo);
 
-  Future<Either<Failure,Unit>> establecerSticky(String hilo);
+  Future<Either<Failure, Unit>> seguir(String hilo);
+  Future<Either<Failure, Unit>> ocultar(String hilo);
+  Future<Either<Failure, Unit>> establecerFavorito(String hilo);
 
-  Future<Either<Failure,Unit>> seguir(String hilo);
-  Future<Either<Failure,Unit>> ocultar(String hilo);
-  Future<Either<Failure,Unit>> establecerFavorito(String hilo);
+  Future<Either<Failure, Unit>> eliminarSticky(String hilo);
+  Future<Either<Failure, Unit>> eliminar(String hilo);
 
-  Future<Either<Failure,Unit>> eliminarSticky(String hilo);
-  Future<Either<Failure,Unit>> eliminar(String hilo);
-
-  Future<Either<Failure,Unit>> postear({
+  Future<Either<Failure, String>> postear({
     required String titulo,
     required String descripcion,
     required String subcategoria,
     required List<String> encuesta,
-    required bool spoiler ,
+    required bool spoiler,
     required PickedFile portada,
     required bool dados,
     required bool idUnico,

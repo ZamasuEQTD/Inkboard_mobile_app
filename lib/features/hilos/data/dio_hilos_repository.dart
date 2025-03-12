@@ -189,7 +189,7 @@ class DioHilosRepository extends IHilosRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> postear({
+  Future<Either<Failure, String>> postear({
     required String titulo,
     required String descripcion,
     required String subcategoria,
