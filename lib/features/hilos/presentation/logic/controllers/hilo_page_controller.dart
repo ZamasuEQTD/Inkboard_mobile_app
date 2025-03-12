@@ -87,6 +87,20 @@ class HiloPageController extends GetxController {
     comentandoHilo.value = false;
   }
 
+  List<ComentarioModel> getPorTags(List<String> tags) {
+    List<ComentarioModel> comentarios = [];
+
+    for (var tag in tags) {
+      ComentarioModel? c = comentariosMap[tag];
+
+      if (c != null) {
+        comentarios.add(c);
+      }
+    }
+
+    return comentarios;
+  }
+
   Future pickGaleriaFile() async {
     var picked = await _picker.pickOne();
 

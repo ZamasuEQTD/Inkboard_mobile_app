@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
@@ -20,6 +21,8 @@ import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/features/media/presentation/widgets/miniatura/picked_media_miniatura.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
+import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
+import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:popover/popover.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
@@ -219,101 +222,96 @@ class HiloBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: hiloSectionRadius,
-          child: ColoredBox(
-            color: Theme.of(context).colorScheme.surface,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Row(
-                spacing: 4,
-                children: [
-                  IconButton(
-                    onPressed: Get.back,
-                    icon: Icon(Icons.chevron_left),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox.square(
-                      dimension: 30,
-                      child: Image(
-                        image: NetworkImage(hilo.subcategoria.imagen),
+    return GestureDetector(
+      onLongPress: () {},
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: hiloSectionRadius,
+            child: ColoredBox(
+              color: Theme.of(context).colorScheme.surface,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Row(
+                  spacing: 4,
+                  children: [
+                    IconButton(
+                      onPressed: Get.back,
+                      icon: Icon(Icons.chevron_left),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox.square(
+                        dimension: 30,
+                        child: Image(
+                          image: NetworkImage(hilo.subcategoria.imagen),
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      hilo.subcategoria.nombre,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: CupertinoColors.link,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ).marginOnly(bottom: 10),
-        ClipRRect(
-          borderRadius: hiloSectionRadius,
-          child: ColoredBox(
-            color: Colors.white,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(spacing: 1, children: acciones),
-                  Row(
-                    spacing: 3.5,
-                    children: [
-                      Text(
-                        hilo.autor,
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        hilo.subcategoria.nombre,
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
+                          color: CupertinoColors.link,
                         ),
                       ),
-                      Chip(
-                        labelPadding: EdgeInsets.symmetric(
-                          vertical: 0,
-                          horizontal: 4,
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 0,
-                          horizontal: 4,
-                        ),
-                        backgroundColor: Colors.grey.shade400,
-                        label: Text(
-                          hilo.autorRole,
-                          style: TextStyle(fontSize: 12, color: Colors.white),
-                        ),
-                      ),
-                      Text(
-                        hilo.createdAt.tiempoTranscurrido,
-                        style: TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ).marginOnly(right: 5),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ).marginOnly(bottom: 10),
+          ).marginOnly(bottom: 10),
+          ClipRRect(
+            borderRadius: hiloSectionRadius,
+            child: ColoredBox(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(spacing: 1, children: acciones),
+                    Row(
+                      spacing: 3.5,
+                      children: [
+                        Text(
+                          hilo.autor,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Tag(
+                          color: Colors.grey.shade400,
+                          label: Text(
+                            hilo.autorRole,
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ),
+                        Text(
+                          hilo.createdAt.tiempoTranscurrido,
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ).marginOnly(right: 5),
+                  ],
+                ),
+              ),
+            ),
+          ).marginOnly(bottom: 10),
 
-        portada.marginOnly(bottom: 10),
-        Text(
-          hilo.titulo,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        Text(hilo.descripcion),
-      ],
-    ).paddingSymmetric(horizontal: 8, vertical: 10);
+          portada.marginOnly(bottom: 10),
+          SelectableText(
+            hilo.titulo,
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SelectableText(hilo.descripcion),
+        ],
+      ).paddingSymmetric(horizontal: 8, vertical: 10),
+    );
   }
 
   Widget get portada => Center(
@@ -536,5 +534,33 @@ class HiloBodySkeleton extends StatelessWidget {
         ),
       ],
     ).paddingSymmetric(horizontal: 10);
+  }
+}
+
+class HiloOpcionesBottomSheet extends StatelessWidget {
+  final HiloModel hilo;
+  const HiloOpcionesBottomSheet({super.key, required this.hilo});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = Get.find<AuthController>();
+    return GrupoSeleccionableSliverSheet(
+      grupos: [
+        if (auth.authenticado && auth.esModerador)
+          GrupoSeleccionableItem(
+            seleccionables: [
+              SeleccionableItem(titulo: "Eliminar"),
+              SeleccionableItem(titulo: "Ver usuario"),
+            ],
+          ),
+
+        if (hilo.esOp)
+          GrupoSeleccionableItem(
+            seleccionables: [
+              SeleccionableItem(titulo: "Desactivar notificaciones"),
+            ],
+          ),
+      ],
+    );
   }
 }
