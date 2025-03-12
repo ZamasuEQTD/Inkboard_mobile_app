@@ -20,4 +20,5 @@ class AppLightColors {
   
   static final secondary = Colors.grey.shade200;
 
+  static final outlinedVariant = Colors.grey.shade300;
 }

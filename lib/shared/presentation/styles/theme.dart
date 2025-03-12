@@ -65,6 +65,7 @@ class AppThemes {
       onPrimary: AppLightColors.onPrimary,
       error: AppLightColors.error,
       onError: AppLightColors.onError,
+      outlineVariant: AppLightColors.outlinedVariant,
     ),
     appBarTheme: AppBarTheme(backgroundColor: AppLightColors.surface),
     dialogTheme: DialogTheme(backgroundColor: AppLightColors.surface),

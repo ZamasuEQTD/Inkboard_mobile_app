@@ -77,19 +77,13 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Titulo",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text("Titulo", style: context.formSectionTitleTextStyle),
                 TextFormField(
                   decoration: InputDecoration(hintText: "Titulo"),
                   controller: postearHiloController.titulo,
                 ),
                 PostearHiloDialog.marginSection,
-                Text(
-                  "Descripcion",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text("Descripcion", style: context.formSectionTitleTextStyle),
                 TextFormField(
                   minLines: 5,
                   maxLines: 5,
@@ -97,10 +91,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                   controller: postearHiloController.descripcion,
                 ),
                 PostearHiloDialog.marginSection,
-                Text(
-                  "Subcategoria",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text("Subcategoria", style: context.formSectionTitleTextStyle),
                 OutlinedButton(
                   onPressed: () {
                     Get.bottomSheet(
@@ -151,10 +142,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                   ),
                 ),
                 PostearHiloDialog.marginSection,
-                Text(
-                  "Portada",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Text("Portada", style: context.formSectionTitleTextStyle),
                 //---portada---
                 if (!postearHiloController.hayPortadaSeleccionada)
                   _sinPortadaSeleccionadaWidget()
@@ -179,7 +167,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                 PostearHiloDialog.marginSection,
                 Text(
                   "Banderas",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: context.formSectionTitleTextStyle
                 ),
                 _banderasWidget(),
                 PostearHiloDialog.marginSection,
@@ -201,6 +189,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
 
     return ResponsiveLayoutDialog(title: "Postear hilo", child: child);
   }
+
 
   Center portadaSeleccionada() {
     return Center(
@@ -401,4 +390,9 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
       ],
     );
   }
+}
+
+extension TextStylesFromContext on BuildContext {
+  TextStyle get formSectionTitleTextStyle =>
+      Theme.of(this).textTheme.labelMedium!;
 }
