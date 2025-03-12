@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
@@ -9,6 +10,7 @@ import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 import 'package:inkboard/features/moderacion/presentation/registros/registro_de_usuario.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/blur/blur.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/gradient_effect.dart';
+import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
 import 'package:inkboard/shared/presentation/widgets/image_overlapped.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:popover/popover.dart';
@@ -276,6 +278,41 @@ class TagPortadaIcon extends StatelessWidget {
           label: icon,
         ),
       ),
+    );
+  }
+}
+
+class OpcionesDePortadaBottomSheet extends StatelessWidget {
+  final PortadaModel portada;
+  const OpcionesDePortadaBottomSheet({super.key, required this.portada});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = Get.find<AuthController>();
+    return GrupoSeleccionableSliverSheet(
+      grupos: [
+        GrupoSeleccionableItem(
+          seleccionables: [
+            SeleccionableItem(titulo: "Reportar"),
+            SeleccionableItem(titulo: "Ocultar"),
+            SeleccionableItem(titulo: "Reportar"),
+            SeleccionableItem(
+              titulo: "Copiar titulo",
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: portada.titulo));
+                Get.back();
+              },
+            ),
+          ],
+        ),
+        if (auth.authenticado && auth.esModerador)
+          GrupoSeleccionableItem(
+            seleccionables: [
+              SeleccionableItem(titulo: "Eliminar"),
+              SeleccionableItem(titulo: "Ver usuario"),
+            ],
+          ),
+      ],
     );
   }
 }

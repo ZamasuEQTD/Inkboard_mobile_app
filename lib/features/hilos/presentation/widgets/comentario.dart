@@ -3,13 +3,12 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/comentarios/domain/icomentarios_repository.dart';
-import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
-import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/shared/presentation/util/color_picker.dart';
@@ -17,7 +16,6 @@ import 'package:inkboard/shared/presentation/util/extensions/duration_extension.
 import 'package:inkboard/shared/presentation/widgets/effects/gradient/animated_gradient.dart';
 import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
-import 'package:popover/popover.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../logic/controllers/hilo_page_controller.dart';
@@ -49,6 +47,34 @@ class ComentarioWidget extends StatelessWidget {
                           SeleccionableItem(
                             titulo: "Ocultar",
                             leading: Icon(Icons.visibility_off_outlined),
+                          ),
+                          SeleccionableItem(
+                            titulo: "Ocultar",
+                            leading: Icon(Icons.visibility_off_outlined),
+                          ),
+                          if (comentario.respondidoPor.isNotEmpty)
+                            SeleccionableItem(
+                              titulo: "Ver historial de respuestas",
+                              onTap:
+                                  () => Get.bottomSheet(
+                                    HistorialDeComentariosBottomSheet(
+                                      comentarios:
+                                          Get.find<HiloPageController>()
+                                              .getPorTags(
+                                                comentario.respondidoPor,
+                                              ),
+                                    ),
+                                  ),
+                            ),
+                          SeleccionableItem(
+                            titulo: "Copiar titulo",
+                            onTap: () {
+                              Clipboard.setData(
+                                ClipboardData(text: comentario.texto),
+                              );
+                              Get.back();
+                            },
+                            leading: Icon(Icons.copy),
                           ),
                         ],
                       ),
@@ -204,18 +230,8 @@ class ComentarioWidget extends StatelessWidget {
               onTap: () {
                 HiloPageController c = Get.find<HiloPageController>();
                 Get.bottomSheet(
-                  BottomSheet(
-                    enableDrag: false,
-                    onClosing: () {},
-                    builder:
-                        (context) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ComentarioWidget(
-                              comentario: c.comentariosMap[tag]!,
-                            ),
-                          ],
-                        ).paddingSymmetric(horizontal: 15, vertical: 5),
+                  HistorialDeComentariosBottomSheet(
+                    comentarios: c.getPorTags([tag]),
                   ),
                 );
               },
@@ -357,4 +373,39 @@ class MultiInvertido extends LinearGradientAnimation {
   ];
 
   const MultiInvertido({super.key}) : super(colors: _colors, reverse: true);
+}
+
+class HistorialDeComentariosBottomSheet extends StatelessWidget {
+  final List<ComentarioModel> comentarios;
+  const HistorialDeComentariosBottomSheet({
+    super.key,
+    required this.comentarios,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomSheet(
+      onClosing: () {},
+      builder:
+          (context) => DraggableScrollableSheet(
+            maxChildSize: 0.7,
+            builder:
+                (context, scrollController) => CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      sliver: SliverList.builder(
+                        itemCount: comentarios.length,
+                        itemBuilder:
+                            (context, index) => ComentarioWidget(
+                              comentario: comentarios[index],
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+          ),
+    );
+  }
 }
