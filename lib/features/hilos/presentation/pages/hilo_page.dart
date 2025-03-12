@@ -223,7 +223,8 @@ class HiloBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () {},
+      behavior: HitTestBehavior.translucent,
+      onLongPress: () => Get.bottomSheet(HiloOpcionesBottomSheet(hilo: hilo)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -285,15 +286,19 @@ class HiloBody extends StatelessWidget {
                           ),
                         ),
                         Tag(
-                          color: Colors.grey.shade400,
+                          color: Colors.grey.shade500,
                           label: Text(
                             hilo.autorRole,
-                            style: TextStyle(fontSize: 12, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         Text(
                           hilo.createdAt.tiempoTranscurrido,
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 8),
                         ),
                       ],
                     ).marginOnly(right: 5),
@@ -544,23 +549,27 @@ class HiloOpcionesBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Get.find<AuthController>();
-    return GrupoSeleccionableSliverSheet(
-      grupos: [
-        if (auth.authenticado && auth.esModerador)
-          GrupoSeleccionableItem(
-            seleccionables: [
-              SeleccionableItem(titulo: "Eliminar"),
-              SeleccionableItem(titulo: "Ver usuario"),
-            ],
-          ),
+    return BottomSheet(
+      onClosing: () {},
+      builder:
+          (context) => GrupoSeleccionableSliverSheet(
+            grupos: [
+              if (auth.authenticado && auth.esModerador)
+                GrupoSeleccionableItem(
+                  seleccionables: [
+                    SeleccionableItem(titulo: "Eliminar"),
+                    SeleccionableItem(titulo: "Ver usuario"),
+                  ],
+                ),
 
-        if (hilo.esOp)
-          GrupoSeleccionableItem(
-            seleccionables: [
-              SeleccionableItem(titulo: "Desactivar notificaciones"),
+              if (hilo.esOp)
+                GrupoSeleccionableItem(
+                  seleccionables: [
+                    SeleccionableItem(titulo: "Desactivar notificaciones"),
+                  ],
+                ),
             ],
           ),
-      ],
     );
   }
 }

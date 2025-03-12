@@ -109,42 +109,6 @@ class DioHilosRepository extends IHilosRepository {
   }
 
   @override
-  Future<Either<Failure, String>> postear({
-    required String titulo,
-    required String descripcion,
-    required String subcategoria,
-    required List<String> encuesta,
-    required bool spoiler,
-    required PickedFile portada,
-    required bool dados,
-    required bool idUnico,
-  }) async {
-    var form = FormData.fromMap({
-      "titulo": titulo,
-      "descripcion": descripcion,
-      "subcategoria": subcategoria,
-      "encuesta": encuesta,
-      "spoiler": spoiler,
-      "file": await MultipartFile.fromFile(
-        portada.source,
-        contentType: MediaType.parse(portada.contentType),
-      ),
-      "dados": dados,
-      "idUnico": idUnico,
-    });
-
-    try {
-      var response = await dio.post("hilos/postear", data: form);
-
-      if (response.isFailure) return Left(response.toFailure);
-
-      return Right(response.data["data"]);
-    } on Exception catch (e) {
-      return Left(e.toFailure);
-    }
-  }
-
-  @override
   Future<Either<Failure, Unit>> establecerSticky(String hilo) async {
     try {
       var response = await dio.post("hilos/establecer-sticky/$hilo");
@@ -219,6 +183,42 @@ class DioHilosRepository extends IHilosRepository {
       if (response.isFailure) return Left(response.toFailure);
 
       return Right(unit);
+    } on Exception catch (e) {
+      return Left(e.toFailure);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> postear({
+    required String titulo,
+    required String descripcion,
+    required String subcategoria,
+    required List<String> encuesta,
+    required bool spoiler,
+    required PickedFile portada,
+    required bool dados,
+    required bool idUnico,
+  }) async {
+    var form = FormData.fromMap({
+      "titulo": titulo,
+      "descripcion": descripcion,
+      "subcategoria": subcategoria,
+      "encuesta": encuesta,
+      "spoiler": spoiler,
+      "file": await MultipartFile.fromFile(
+        portada.source,
+        contentType: MediaType.parse(portada.contentType),
+      ),
+      "dados": dados,
+      "idUnico": idUnico,
+    });
+
+    try {
+      var response = await dio.post("hilos/postear", data: form);
+
+      if (response.isFailure) return Left(response.toFailure);
+
+      return Right(response.data["data"]);
     } on Exception catch (e) {
       return Left(e.toFailure);
     }
