@@ -23,9 +23,10 @@ class GrupoSeleccionableSliverSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
+      shrinkWrap: true,
       slivers: [
         SliverPadding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           sliver: SliverMainAxisGroup(
             slivers: [
               ...grupos.map(
