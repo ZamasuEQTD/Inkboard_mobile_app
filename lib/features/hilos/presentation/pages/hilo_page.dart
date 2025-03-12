@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
+import 'package:inkboard/features/core/presentation/widgets/revelador_de_contenido.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
@@ -307,7 +308,6 @@ class HiloBody extends StatelessWidget {
               ),
             ),
           ).marginOnly(bottom: 10),
-
           portada.marginOnly(bottom: 10),
           SelectableText(
             hilo.titulo,
@@ -325,6 +325,12 @@ class HiloBody extends StatelessWidget {
         radius: BorderRadius.circular(10),
         constraints: BoxConstraints(maxHeight: 450),
       ),
+      builder:
+          (context, dimensionable) => ReveladorDeContenido(
+            initialValue: hilo.media.spoiler,
+            child: dimensionable,
+          ),
+
       media: MediaSource(source: MediaSourceType.network, model: hilo.media),
     ),
   );
@@ -510,7 +516,6 @@ class HiloBodySkeleton extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
         ).marginOnly(bottom: 10),
-
         Wrap(
           spacing: 4,
           runSpacing: 4,
@@ -523,7 +528,6 @@ class HiloBodySkeleton extends StatelessWidget {
             ),
           ),
         ),
-
         Gap(4),
         Wrap(
           spacing: 4,

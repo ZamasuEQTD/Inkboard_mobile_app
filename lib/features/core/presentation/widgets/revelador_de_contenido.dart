@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:inkboard/shared/presentation/widgets/effects/blur/blur.dart';
 
@@ -22,45 +21,53 @@ class _ReveladorDeContenidoState extends State<ReveladorDeContenido> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
-        Positioned.fill(
-          child: Blur(
-            blurear: ocultar,
-            child:
-                !ocultar
-                    ? SizedBox()
-                    : ColoredBox(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              style: ButtonStyle(
-                                padding: WidgetStatePropertyAll(
-                                  EdgeInsets.symmetric(vertical: 22),
+    return ClipRect(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: Stack(
+        children: [
+          widget.child,
+          Positioned.fill(
+            child: Blur(
+              blurear: ocultar,
+              child:
+                  !ocultar
+                      ? SizedBox()
+                      : ColoredBox(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 40),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                style: ButtonStyle(
+                                  shape: WidgetStatePropertyAll(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                  padding: WidgetStatePropertyAll(
+                                    EdgeInsets.symmetric(vertical: 22),
+                                  ),
+                                  side: WidgetStatePropertyAll(
+                                    BorderSide(color: Colors.white),
+                                  ),
+                                  foregroundColor: WidgetStatePropertyAll(
+                                    Colors.white,
+                                  ),
                                 ),
-                                side: WidgetStatePropertyAll(
-                                  BorderSide(color: Colors.white),
-                                ),
-                                foregroundColor: WidgetStatePropertyAll(
-                                  Colors.white,
-                                ),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  ocultar = !ocultar;
-                                });
-                              },
-                              child: FittedBox(
-                                child: Text(
-                                  "Ver contenido",
-                                  style: TextStyle(
-                                    letterSpacing: 1.5,
-                                    fontWeight: FontWeight.w500,
+                                onPressed: () {
+                                  setState(() {
+                                    ocultar = !ocultar;
+                                  });
+                                },
+                                child: FittedBox(
+                                  child: Text(
+                                    "Ver contenido",
+                                    style: TextStyle(
+                                      letterSpacing: 1.5,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -68,10 +75,10 @@ class _ReveladorDeContenidoState extends State<ReveladorDeContenido> {
                           ),
                         ),
                       ),
-                    ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

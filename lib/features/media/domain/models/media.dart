@@ -11,10 +11,12 @@ class MediaModel {
   final MediaProvider provider;
   final String url;
   final String? previsualizacion;
+  final bool spoiler;
 
   const MediaModel({
     required this.provider,
     required this.url,
+    required this.spoiler,
     this.previsualizacion,
   });
 
@@ -27,6 +29,7 @@ class MediaModel {
     return MediaModel(
       provider: provider ?? this.provider,
       url: url ?? this.url,
+      spoiler: spoiler ?? this.spoiler,
       previsualizacion: previsualizacion ?? this.previsualizacion,
     );
   }
@@ -37,6 +40,7 @@ class MediaModel {
         (e) => e.name == json['provider'].toString().toLowerCase(),
       ),
       url: json['url'],
+      spoiler: json['spoiler'],
       previsualizacion: json['previsualizacion'],
     );
   }
@@ -50,4 +54,4 @@ class MediaModel {
   }
 }
 
-enum MediaProvider { video, image,gif, youtube, other }
+enum MediaProvider { video, image, gif, youtube, other }

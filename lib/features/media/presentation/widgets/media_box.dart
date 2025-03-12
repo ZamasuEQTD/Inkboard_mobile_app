@@ -22,6 +22,7 @@ class MediaBox extends StatelessWidget {
   static Set<MediaProvider> dimensionables = Set.from({
     MediaProvider.image,
     MediaProvider.video,
+    MediaProvider.gif,
     MediaProvider.youtube,
   });
 

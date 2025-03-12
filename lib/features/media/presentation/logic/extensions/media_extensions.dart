@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,15 +6,15 @@ import 'package:inkboard/features/media/presentation/logic/video_provider.dart';
 
 import '../../../domain/models/media.dart';
 
-extension MediaProviderConversionsExtensions on MediaSource{
-  ImageProvider toImage(){
-    if( isFromNetwork) return NetworkImage(this.model.url);
+extension MediaProviderConversionsExtensions on MediaSource {
+  ImageProvider toImage() {
+    if (isFromNetwork) return NetworkImage(model.url);
 
     return FileImage(File(model.url));
   }
 
-  VideoProvider toVideoProvider(){
-    if( isFromNetwork) return NetworkVideoProvider(model.url);
+  VideoProvider toVideoProvider() {
+    if (isFromNetwork) return NetworkVideoProvider(model.url);
 
     return FileVideoProvider(File(model.url));
   }
@@ -24,7 +23,11 @@ extension MediaProviderConversionsExtensions on MediaSource{
   bool get isFromFile => source == MediaSourceType.file;
 }
 
-
-extension MediaPickedConversionsExtensions  on PickedFile {
-  MediaModel toMediaModel()=> new MediaModel(previsualizacion: null, provider: this.provider, url: this.source);
+extension MediaPickedConversionsExtensions on PickedFile {
+  MediaModel toMediaModel() => MediaModel(
+    previsualizacion: null,
+    provider: provider,
+    url: source,
+    spoiler: false,
+  );
 }
