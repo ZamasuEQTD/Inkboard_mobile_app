@@ -165,10 +165,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
                 else
                   ..._encuestaWidget,
                 PostearHiloDialog.marginSection,
-                Text(
-                  "Banderas",
-                  style: context.formSectionTitleTextStyle
-                ),
+                Text("Banderas", style: context.formSectionTitleTextStyle),
                 _banderasWidget(),
                 PostearHiloDialog.marginSection,
                 SizedBox(
@@ -189,7 +186,6 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
 
     return ResponsiveLayoutDialog(title: "Postear hilo", child: child);
   }
-
 
   Center portadaSeleccionada() {
     return Center(

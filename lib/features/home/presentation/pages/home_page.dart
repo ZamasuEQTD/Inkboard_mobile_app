@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                         text: "Bienvenido ",
                         children: [
                           TextSpan(
-                            text: this.auth.currentUser.username,
+                            text: auth.currentUser.username,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -206,7 +206,10 @@ class HomeAppBar extends StatelessWidget {
               auth.authenticado
                   ? IconButton(
                     onPressed: () {
-                      showDialog(context: context, builder: (context) => MisNotificacionesLayout());
+                      showDialog(
+                        context: context,
+                        builder: (context) => MisNotificacionesLayout(),
+                      );
                     },
                     icon: Icon(Icons.notifications_outlined),
                   )

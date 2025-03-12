@@ -41,6 +41,7 @@ class PortadaItem extends StatelessWidget {
             () =>
                 Get.bottomSheet(OpcionesDePortadaBottomSheet(portada: portada)),
         child: ClipRRect(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
           borderRadius: _radius,
           child: ImageOverlapped.provider(
             provider: NetworkImage(portada.miniatura.url),
@@ -68,20 +69,28 @@ class PortadaItem extends StatelessWidget {
                                 portada.subcategoria,
                                 color: Colors.green,
                                 padding: EdgeInsets.symmetric(
-                                  vertical: 2,
                                   horizontal: 4,
+                                  vertical: 2,
                                 ),
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
                               ),
                               if (portada.esNuevo)
                                 Tag.text(
                                   "Nuevo",
-                                  color: Colors.purple.shade300,
+                                  color: Colors.indigo.shade300,
                                   padding: EdgeInsets.symmetric(
-                                    vertical: 2,
                                     horizontal: 4,
+                                    vertical: 2,
                                   ),
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ...[
                                 if (portada.banderas.esSticky)
@@ -186,7 +195,7 @@ class TagPortadaIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
-      dimension: 24,
+      dimension: 20,
       child: FittedBox(
         child: Tag(
           padding: EdgeInsets.all(2),
