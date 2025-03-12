@@ -7,14 +7,17 @@ import 'package:inkboard/features/core/presentation/utils/breakpoints.dart';
 import 'package:inkboard/features/core/router.dart';
 import 'package:inkboard/shared/presentation/styles/theme.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load(fileName: ".env");
+
   GetIt.I.addDependencies();
 
   await Get.put(GetIt.I.get<AuthController>()).restaurarSesion();
-  
+
   runApp(const MyApp());
 }
 
