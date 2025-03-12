@@ -36,166 +36,82 @@ class PortadaItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconTheme(
       data: IconThemeData(color: Colors.white),
-      child: ClipRRect(
-        borderRadius: _radius,
-        child: ImageOverlapped.provider(
-          provider: NetworkImage(portada.miniatura.url),
-          boxFit: BoxFit.cover,
-          child: Blur(
-            blurear: portada.miniatura.spoiler,
-            child: GradientEffectWidget(
-              colors: _gradient,
-              stops: _stops,
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Wrap(
-                          spacing: 2,
-                          runSpacing: 2,
-                          children: [
-                            Tag.text(
-                              portada.subcategoria,
-                              color: Colors.green,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 4,
-                              ),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            if (portada.esNuevo)
+      child: GestureDetector(
+        onLongPress:
+            () =>
+                Get.bottomSheet(OpcionesDePortadaBottomSheet(portada: portada)),
+        child: ClipRRect(
+          borderRadius: _radius,
+          child: ImageOverlapped.provider(
+            provider: NetworkImage(portada.miniatura.url),
+            boxFit: BoxFit.cover,
+            child: Blur(
+              blurear: portada.miniatura.spoiler,
+              child: GradientEffectWidget(
+                colors: _gradient,
+                stops: _stops,
+                child: Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Wrap(
+                            spacing: 2,
+                            runSpacing: 2,
+                            children: [
                               Tag.text(
-                                "Nuevo",
-                                color: Colors.purple.shade300,
+                                portada.subcategoria,
+                                color: Colors.green,
                                 padding: EdgeInsets.symmetric(
                                   vertical: 2,
                                   horizontal: 4,
                                 ),
                                 style: TextStyle(color: Colors.white),
                               ),
-                            ...[
-                              if (portada.banderas.esSticky)
-                                TagPortadaIcon(
-                                  icon: Icon(Icons.sticky_note_2),
-                                  background: Colors.amber.shade700,
+                              if (portada.esNuevo)
+                                Tag.text(
+                                  "Nuevo",
+                                  color: Colors.purple.shade300,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 2,
+                                    horizontal: 4,
+                                  ),
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                              if (portada.banderas.dadosActivado)
-                                TagPortadaIcon(icon: Icon(Icons.casino)),
-                              if (portada.banderas.idUnicoActivado)
-                                TagPortadaIcon(icon: Icon(Icons.person)),
-                              if (portada.banderas.tieneEncuesta)
-                                TagPortadaIcon(icon: Icon(Icons.bar_chart)),
+                              ...[
+                                if (portada.banderas.esSticky)
+                                  TagPortadaIcon(
+                                    icon: Icon(Icons.sticky_note_2),
+                                    background: Colors.amber.shade700,
+                                  ),
+                                if (portada.banderas.dadosActivado)
+                                  TagPortadaIcon(icon: Icon(Icons.casino)),
+                                if (portada.banderas.idUnicoActivado)
+                                  TagPortadaIcon(icon: Icon(Icons.person)),
+                                if (portada.banderas.tieneEncuesta)
+                                  TagPortadaIcon(icon: Icon(Icons.bar_chart)),
+                              ],
                             ],
-                          ],
-                        ),
-                        Builder(
-                          builder: (context) {
-                            final AuthController auth = Get.find();
-
-                            return IconButton(
-                              onPressed: () {
-                                showPopover(
-                                  context: context,
-                                  width: 250,
-                                  bodyBuilder: (context) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                          title: Text("Reportar"),
-                                          trailing: Icon(Icons.flag),
-                                        ),
-                                        ListTile(
-                                          title: Text("Ocultar"),
-                                          trailing: Icon(Icons.visibility_off),
-                                        ),
-                                        ListTile(
-                                          title: Text("Seguir"),
-                                          trailing: Icon(
-                                            Icons.person_3_outlined,
-                                          ),
-                                        ),
-
-                                        if (auth.authenticado &&
-                                            auth.esModerador) ...[
-                                          ListTile(
-                                            title: Text("Ver usuario"),
-                                            trailing: Icon(
-                                              Icons.person_2_outlined,
-                                            ),
-                                            onTap:
-                                                () => showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (context) =>
-                                                          RegistroDeUsuarioModeradorPanel(
-                                                            usuario:
-                                                                portada
-                                                                    .autorId!,
-                                                          ),
-                                                ),
-                                          ),
-                                          ListTile(
-                                            onTap:
-                                                () => GetIt.I
-                                                    .get<IHilosRepository>()
-                                                    .eliminar(portada.id),
-                                            title: Text("Eliminar"),
-                                            trailing: Icon(
-                                              Icons.delete_outline_outlined,
-                                            ),
-                                          ),
-                                          if (!portada.banderas.esSticky)
-                                            ListTile(
-                                              title: Text("Esteblecer sticky"),
-                                              trailing: Icon(Icons.push_pin),
-                                              onTap: () {
-                                                GetIt.I
-                                                    .get<IHilosRepository>()
-                                                    .establecerSticky(
-                                                      portada.id,
-                                                    );
-                                              },
-                                            )
-                                          else
-                                            ListTile(
-                                              title: Text("Eliminar sticky"),
-                                              trailing: Icon(Icons.push_pin),
-                                              onTap: () {
-                                                GetIt.I
-                                                    .get<IHilosRepository>()
-                                                    .eliminarSticky(portada.id);
-                                              },
-                                            ),
-                                        ],
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              icon: Icon(Icons.more_vert),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    Text(
-                      portada.titulo,
-                      maxLines: 2,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        overflow: TextOverflow.ellipsis,
-                        color: Colors.white,
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      Text(
+                        portada.titulo,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          overflow: TextOverflow.ellipsis,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -289,30 +205,65 @@ class OpcionesDePortadaBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Get.find<AuthController>();
-    return GrupoSeleccionableSliverSheet(
-      grupos: [
-        GrupoSeleccionableItem(
-          seleccionables: [
-            SeleccionableItem(titulo: "Reportar"),
-            SeleccionableItem(titulo: "Ocultar"),
-            SeleccionableItem(titulo: "Reportar"),
-            SeleccionableItem(
-              titulo: "Copiar titulo",
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: portada.titulo));
-                Get.back();
-              },
-            ),
-          ],
-        ),
-        if (auth.authenticado && auth.esModerador)
-          GrupoSeleccionableItem(
-            seleccionables: [
-              SeleccionableItem(titulo: "Eliminar"),
-              SeleccionableItem(titulo: "Ver usuario"),
+    return BottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      onClosing: () {},
+      builder:
+          (context) => GrupoSeleccionableSliverSheet(
+            grupos: [
+              GrupoSeleccionableItem(
+                seleccionables: [
+                  SeleccionableItem(titulo: "Reportar"),
+                  SeleccionableItem(
+                    titulo: "Ocultar",
+                    onTap:
+                        () =>
+                            GetIt.I.get<IHilosRepository>().ocultar(portada.id),
+                  ),
+                  SeleccionableItem(titulo: "Seguir"),
+                  SeleccionableItem(titulo: "Agregar a favoritos"),
+                  SeleccionableItem(
+                    titulo: "Copiar titulo",
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: portada.titulo));
+                      Get.back();
+                    },
+                  ),
+                ],
+              ),
+              if (auth.authenticado && auth.esModerador)
+                GrupoSeleccionableItem(
+                  seleccionables: [
+                    SeleccionableItem(
+                      titulo:
+                          portada.banderas.esSticky
+                              ? "Eliminar stitkcy"
+                              : "Establecer sticky",
+                      onTap: () {
+                        var repo = GetIt.I.get<IHilosRepository>();
+
+                        if (portada.banderas.esSticky) {
+                          repo.eliminarSticky(portada.id);
+                        } else {
+                          repo.establecerSticky(portada.id);
+                        }
+
+                        Get.back();
+                      },
+                    ),
+                    SeleccionableItem(
+                      titulo: "Eliminar",
+                      onTap: () {
+                        var response = GetIt.I.get<IHilosRepository>().eliminar(
+                          portada.id,
+                        );
+                      },
+                    ),
+                    SeleccionableItem(titulo: "Ver usuario"),
+                  ],
+                ),
             ],
           ),
-      ],
     );
   }
 }
