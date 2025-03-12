@@ -89,7 +89,7 @@ class PostearHiloController extends GetxController {
     result.fold((l) {}, (r) {
       Get.back();
 
-      Get.toNamed("hilo/$r");
+      Get.toNamed("/hilo/$r");
     });
   }
 
