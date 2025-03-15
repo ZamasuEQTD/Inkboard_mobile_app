@@ -1,5 +1,6 @@
 import 'dart:collection';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,9 @@ import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/presentation/logic/controllers/hilo_page_controller.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/comentario.dart';
-import 'package:inkboard/features/media/domain/iminiatura_service.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
+import 'package:inkboard/features/media/presentation/logic/extensions/media_extensions.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
 import 'package:inkboard/features/media/presentation/widgets/miniatura/picked_media_miniatura.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
@@ -377,9 +378,18 @@ class _ComentarHiloState extends State<ComentarHilo> {
       ),
       child: AutenticacionRequeridaButton(
         child: Column(
+          spacing: 5,
           children: [
-            if (controller.hayMediaSeleccionada)
-              Obx(() => Row(children: medias)),
+            Obx(() {
+              if (controller.hayMediaSeleccionada) {
+                return Row(
+                  spacing: 3,
+                  children: [...medias],
+                ).paddingSymmetric(horizontal: 10).paddingOnly(top: 10);
+              }
+
+              return SizedBox();
+            }),
             Row(
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
@@ -391,30 +401,31 @@ class _ComentarHiloState extends State<ComentarHilo> {
                           shape: WidgetStatePropertyAll(CircleBorder()),
                         ),
                         onPressed: () {
-                          showPopover(
-                            context: context,
-                            width: 250,
-                            arrowWidth: 0,
-                            arrowHeight: 0,
-                            barrierColor: Colors.transparent,
-                            bodyBuilder: (context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    title: Text("Agregar archivo"),
-                                    trailing: Icon(Icons.image),
-                                    onTap: () => controller.pickGaleriaFile(),
+                          Get.bottomSheet(
+                            BottomSheet(
+                              onClosing: () {},
+                              builder:
+                                  (context) => GrupoSeleccionableSliverSheet(
+                                    grupos: [
+                                      GrupoSeleccionableItem(
+                                        seleccionables: [
+                                          SeleccionableItem(
+                                            titulo: "Agregar archivo",
+                                            onTap:
+                                                () =>
+                                                    Get.find<
+                                                          HiloPageController
+                                                        >()
+                                                        .pickGaleriaFile(),
+                                          ),
+                                          SeleccionableItem(
+                                            titulo: "Agregar enlace",
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  ListTile(
-                                    title: Text("Agregar enlace"),
-                                    trailing: Icon(Icons.link),
-                                  ),
-                                ],
-                              );
-                            },
-                            radius: 15,
-                            direction: PopoverDirection.top,
+                            ),
                           );
                         },
                         icon: Icon(Icons.more_vert),
@@ -458,13 +469,47 @@ class _ComentarHiloState extends State<ComentarHilo> {
     );
   }
 
-  List<Widget> get medias => [
-    ...controller.files.map((f) => PickedMediaMiniatura(media: f)),
-  ];
+  List<Widget> get medias {
+    List<Widget> medias = [];
+    for (var i = 0; i < controller.files.length; i++) {
+      medias.add(
+        Obx(
+          () => GestureDetector(
+            onTap: () {
+              Get.bottomSheet(
+                Obx(
+                  () =>
+                      i < controller.files.length
+                          ? VerPickedMediaBottomSheet(
+                            file: controller.files[i],
+                            onEliminar: () {
+                              Get.back();
+
+                              controller.removeFileAt(i);
+                            },
+                            onBlurear: (value) => controller.blurearFile(i),
+                          )
+                          : SizedBox(),
+                ),
+                isScrollControlled: true,
+              );
+            },
+            child: PickedMediaMiniatura(
+              key: UniqueKey(),
+              media: controller.files[i],
+              blurear: controller.files[i].spoiler,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return medias;
+  }
 }
 
 class HiloBodySkeleton extends StatelessWidget {
-  static final Random random = Random();
+  static final math.Random random = math.Random();
   const HiloBodySkeleton({super.key});
 
   @override
@@ -573,6 +618,76 @@ class HiloOpcionesBottomSheet extends StatelessWidget {
                   ],
                 ),
             ],
+          ),
+    );
+  }
+}
+
+class VerPickedMediaBottomSheet extends StatelessWidget {
+  final PickedFile file;
+
+  final void Function() onEliminar;
+  final void Function(bool value) onBlurear;
+
+  const VerPickedMediaBottomSheet({
+    super.key,
+    required this.file,
+    required this.onEliminar,
+    required this.onBlurear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomSheet(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      enableDrag: false,
+      onClosing: () {},
+      builder:
+          (context) => SingleChildScrollView(
+            child: Column(
+              spacing: 10,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: MediaBox(
+                    style: DimensionableStyle(
+                      constraints: BoxConstraints(maxHeight: 400),
+                    ),
+                    builder:
+                        (context, dimensionable) => ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: dimensionable,
+                        ),
+                    media: MediaSource(
+                      source: MediaSourceType.file,
+                      model: file.toMediaModel(),
+                    ),
+                  ),
+                ),
+
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ColoredBox(
+                    color: Colors.grey.shade200,
+                    child: Column(
+                      children: [
+                        ListTile(title: Text("Eliminar"), onTap: onEliminar),
+                        ListTile(
+                          title: Text("Marcar spoiler"),
+                          trailing: Checkbox(
+                            value: file.spoiler,
+                            onChanged: (value) => onBlurear(value!),
+                          ),
+                        ),
+                      ],
+                    ).paddingSymmetric(vertical: 5),
+                  ),
+                ),
+              ],
+            ).paddingSymmetric(vertical: 10, horizontal: 10),
           ),
     );
   }

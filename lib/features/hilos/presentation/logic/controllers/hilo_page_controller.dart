@@ -106,7 +106,23 @@ class HiloPageController extends GetxController {
 
     if (picked == null) return;
 
+    files.value = [];
+
     files.value = [picked];
+
+    Get.back();
+  }
+
+  void removeFileAt(int index) {
+    files.removeAt(index);
+  }
+
+  void blurearFile(int index) {
+    PickedFile file = files[index];
+
+    files[index] = file.copyWith(spoiler: !file.spoiler);
+
+    files.refresh();
   }
 
   bool haTagueadoA(String tag) => TagUtils.incluyeTag(comentario.text, tag);
