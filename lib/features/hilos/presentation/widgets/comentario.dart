@@ -34,6 +34,7 @@ class ComentarioWidget extends StatelessWidget {
       onLongPress:
           () => Get.bottomSheet(
             BottomSheet(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
               onClosing: () {},
               builder:
                   (context) => GrupoSeleccionableSliverSheet(
@@ -233,6 +234,7 @@ class ComentarioWidget extends StatelessWidget {
                   HistorialDeComentariosBottomSheet(
                     comentarios: c.getPorTags([tag]),
                   ),
+                  isScrollControlled: true,
                 );
               },
               child: Text(
@@ -385,26 +387,35 @@ class HistorialDeComentariosBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       onClosing: () {},
       builder:
-          (context) => DraggableScrollableSheet(
-            maxChildSize: 0.7,
-            builder:
-                (context, scrollController) => CustomScrollView(
-                  controller: scrollController,
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      sliver: SliverList.builder(
-                        itemCount: comentarios.length,
-                        itemBuilder:
-                            (context, index) => ComentarioWidget(
-                              comentario: comentarios[index],
-                            ),
-                      ),
+          (context) => CustomScrollView(
+            shrinkWrap: true,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).hintColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
                     ),
-                  ],
+                    height: 4,
+                    width: 40,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                  ),
                 ),
+              ),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                sliver: SliverList.builder(
+                  itemCount: comentarios.length,
+                  itemBuilder:
+                      (context, index) =>
+                          ComentarioWidget(comentario: comentarios[index]),
+                ),
+              ),
+            ],
           ),
     );
   }
