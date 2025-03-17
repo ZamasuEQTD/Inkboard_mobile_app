@@ -20,6 +20,8 @@ class _LoginDialogState extends State<LoginDialog> {
 
   final IAuthRepository repository = GetIt.I.get();
 
+  bool iniciando = false;
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayoutDialog(
@@ -49,10 +51,18 @@ class _LoginDialogState extends State<LoginDialog> {
               ),
               SizedBox(height: 10),
               SizedBox(
+                height: 50,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => iniciarSesion(),
-                  child: Text("Iniciar sesión"),
+                  child:
+                      iniciando
+                          ? FittedBox(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                          : Text("Iniciar sesión"),
                 ),
               ),
             ],
@@ -63,6 +73,9 @@ class _LoginDialogState extends State<LoginDialog> {
   }
 
   void iniciarSesion() async {
+    setState(() {
+      iniciando = true;
+    });
     var result = await repository.login(
       usuario: usuario.text,
       password: password.text,
@@ -70,10 +83,11 @@ class _LoginDialogState extends State<LoginDialog> {
 
     result.fold((l) {}, (r) async {
       await auth.login(r);
-    
+
       Get.back();
     });
-
-
+    setState(() {
+      iniciando = false;
+    });
   }
 }
