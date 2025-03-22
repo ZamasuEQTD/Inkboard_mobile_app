@@ -24,12 +24,23 @@ final defaultButtonStyle = ButtonStyle(
   ),
 );
 
+//font
+const int labelSmFontSize = 12;
+
+//font
 class AppThemes {
   const AppThemes._();
 
   static final ThemeData _default = ThemeData(
     extensions: [],
     fontFamily: "Poppins",
+    appBarTheme: AppBarTheme(
+      titleTextStyle: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.6,
+      ),
+    ),
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
         shape: WidgetStatePropertyAll(
@@ -53,6 +64,11 @@ class AppThemes {
     elevatedButtonTheme: ElevatedButtonThemeData(style: defaultButtonStyle),
     textTheme: TextTheme(
       labelMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      labelSmall: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppLightColors.labelColor,
+      ),
     ),
   );
 
@@ -65,6 +81,7 @@ class AppThemes {
       onPrimary: AppLightColors.onPrimary,
       error: AppLightColors.error,
       onError: AppLightColors.onError,
+      onSecondary: AppLightColors.onSecondary,
       outlineVariant: AppLightColors.outlinedVariant,
     ),
     appBarTheme: AppBarTheme(backgroundColor: AppLightColors.surface),

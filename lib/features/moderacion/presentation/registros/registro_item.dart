@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inkboard/features/moderacion/domain/models/registro.dart';
@@ -53,6 +52,9 @@ class RegistroItem extends StatelessWidget {
               ),
               Text(
                 "Hace ${registro.fecha.tiempoTranscurrido}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
               ),
               Text(
                 registro.contenido,
@@ -84,9 +86,7 @@ class RegistroItemSkeleton extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: const Bone.square(
-                      size: 70,
-                    ),
+                    child: const Bone.square(size: 70),
                   ),
                   Flexible(
                     child: const Bone.multiText(

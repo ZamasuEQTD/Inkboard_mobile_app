@@ -300,7 +300,10 @@ class HiloBody extends StatelessWidget {
                         ),
                         Text(
                           hilo.createdAt.tiempoTranscurrido,
-                          style: TextStyle(fontSize: 8),
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                         ),
                       ],
                     ).marginOnly(right: 5),

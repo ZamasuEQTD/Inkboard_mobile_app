@@ -58,7 +58,12 @@ class NotificacionItem extends StatelessWidget {
                   ).marginOnly(left: 10),
                 ],
               ),
-              Text("hace ${notificacion.fecha.tiempoTranscurrido}"),
+              Text(
+                "hace ${notificacion.fecha.tiempoTranscurrido}",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+              ),
             ],
           ).paddingAll(10),
         ),

@@ -181,7 +181,7 @@ class ComentarioWidget extends StatelessWidget {
                     Text(
                       comentario.createdAt.tiempoTranscurrido,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: Theme.of(context).colorScheme.onSecondary,
                         fontSize: 12,
                       ),
                     ),
