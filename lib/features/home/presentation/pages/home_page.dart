@@ -191,10 +191,7 @@ class HomeAppBar extends StatelessWidget {
       pinned: true,
       title: GestureDetector(
         onTap: () => Get.toNamed("/"),
-        child: Text(
-          "Inkboard",
-         
-        ),
+        child: Text("Inkboard"),
       ),
       actions: [
         Obx(
