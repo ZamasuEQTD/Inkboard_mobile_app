@@ -12,6 +12,8 @@ import 'package:inkboard/features/comentarios/data/dio_comentarios_repository.da
 import 'package:inkboard/features/comentarios/domain/icomentarios_repository.dart';
 
 import 'package:inkboard/features/core/presentation/utils/network/client.dart';
+import 'package:inkboard/features/encuestas/data/dio_encuesta_repository.dart';
+import 'package:inkboard/features/encuestas/domain/iencuesta_repository.dart';
 import 'package:inkboard/features/hilos/data/dio_hilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/media/data/file_picker_service.dart';
@@ -51,6 +53,8 @@ extension DependencyInjection on GetIt {
     registerSingleton<ICategoriasRepository>(DioCategoriaRepository());
 
     registerSingleton<IComentariosRepository>(DioComentariosRepository());
+
+    registerSingleton<IEncuestaRepository>(DioEncuestaRepository());
     return this;
   }
 }

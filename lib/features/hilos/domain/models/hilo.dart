@@ -55,4 +55,37 @@ class HiloModel {
       autor: json['autor'] as String,
     );
   }
+
+  HiloModel copyWith({
+    String? id,
+    String? titulo,
+    String? descripcion,
+    String? autorId,
+    bool? esOp,
+    int? cantidadComentarios,
+    bool? recibirNotificaciones,
+    SubcategoriaModel? subcategoria,
+    DateTime? createdAt,
+    MediaModel? media,
+    EncuestaModel? encuesta,
+    String? autorRole,
+    String? autor,
+  }) {
+    return HiloModel(
+      id: id ?? this.id,
+      titulo: titulo ?? this.titulo,
+      descripcion: descripcion ?? this.descripcion,
+      autorId: autorId ?? this.autorId,
+      esOp: esOp ?? this.esOp,
+      cantidadComentarios: cantidadComentarios ?? this.cantidadComentarios,
+      recibirNotificaciones:
+          recibirNotificaciones ?? this.recibirNotificaciones,
+      subcategoria: subcategoria ?? this.subcategoria,
+      createdAt: createdAt ?? this.createdAt,
+      media: media ?? this.media,
+      encuesta: encuesta ?? this.encuesta,
+      autorRole: autorRole ?? this.autorRole,
+      autor: autor ?? this.autor,
+    );
+  }
 }

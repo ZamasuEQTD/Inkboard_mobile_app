@@ -1,4 +1,3 @@
-
 class EncuestaModel {
   final String id;
   final List<RespuestaModel> respuestas;
@@ -27,6 +26,18 @@ class EncuestaModel {
     );
   }
 
+  EncuestaModel copyWith({
+    String? id,
+    List<RespuestaModel>? respuestas,
+    String? respuestaVotada,
+  }) {
+    return EncuestaModel(
+      id: id ?? this.id,
+      respuestas: respuestas ?? this.respuestas,
+      respuestaVotada: respuestaVotada ?? this.respuestaVotada,
+    );
+  }
+
   int get votosTotales =>
       respuestas.fold(0, (total, respuesta) => total + respuesta.votos);
 }
@@ -46,6 +57,13 @@ class RespuestaModel {
       id: json['id'] as String,
       respuesta: json['respuesta'] as String,
       votos: json['votos'] as int,
+    );
+  }
+  RespuestaModel copyWith({String? id, String? respuesta, int? votos}) {
+    return RespuestaModel(
+      id: id ?? this.id,
+      respuesta: respuesta ?? this.respuesta,
+      votos: votos ?? this.votos,
     );
   }
 }

@@ -11,6 +11,9 @@ import 'package:inkboard/features/auth/presentation/logic/controllers/auth_contr
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/core/presentation/widgets/revelador_de_contenido.dart';
+import 'package:inkboard/features/encuestas/domain/iencuesta_repository.dart';
+import 'package:inkboard/features/encuestas/domain/models/encuesta.dart';
+import 'package:inkboard/features/encuestas/presentation/widgets/encuesta.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
@@ -313,6 +316,33 @@ class HiloBody extends StatelessWidget {
             ),
           ).marginOnly(bottom: 10),
           portada.marginOnly(bottom: 10),
+          if (hilo.encuesta != null)
+            Encuesta(
+              encuesta: hilo.encuesta!,
+              onVotar: (respuesta) {
+                var response = GetIt.I.get<IEncuestaRepository>().votar(
+                  hilo.encuesta!.id,
+                  respuesta,
+                );
+
+                response.then(
+                  (value) => value.fold(
+                    (l) {
+                      log(l.toString());
+                    },
+                    (r) {
+                      HiloPageController controller = Get.find();
+
+                      controller.hilo.value = hilo.copyWith(
+                        encuesta: hilo.encuesta!.copyWith(
+                          respuestaVotada: respuesta,
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           SelectableText(
             hilo.titulo,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
