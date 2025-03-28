@@ -84,7 +84,12 @@ class AppThemes {
       onSecondary: AppLightColors.onSecondary,
       outlineVariant: AppLightColors.outlinedVariant,
     ),
-    appBarTheme: AppBarTheme(backgroundColor: AppLightColors.surface),
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppLightColors.surface,
+      titleTextStyle: _default.appBarTheme.titleTextStyle!.copyWith(
+        color: AppLightColors.onSurface,
+      ),
+    ),
     dialogTheme: DialogTheme(backgroundColor: AppLightColors.surface),
     scaffoldBackgroundColor: AppLightColors.surface,
     brightness: Brightness.light,
