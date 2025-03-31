@@ -44,11 +44,12 @@ class ResponsiveLayoutDialog extends StatelessWidget {
         if (context.isLargerThanMd) {
           return LargerThanMdDialog(dialogStyle: style, child: child);
         }
-
         if (smTarget == SmTarget.bottomsheet) {
           return BottomSheet(
             onClosing: () {},
-            builder: (context) => this.child,
+            enableDrag: false,
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.5),
+            builder: (context) => this.child.paddingOnly(top: 10),
           );
         }
 
