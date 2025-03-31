@@ -36,9 +36,9 @@ class AppThemes {
     fontFamily: "Poppins",
     appBarTheme: AppBarTheme(
       titleTextStyle: TextStyle(
-        fontSize: 24,
+        fontSize:20,
         fontWeight: FontWeight.w800,
-        letterSpacing: 0.6,
+        letterSpacing: 0.5,
       ),
     ),
     iconButtonTheme: IconButtonThemeData(
@@ -88,6 +88,7 @@ class AppThemes {
       backgroundColor: AppLightColors.surface,
       titleTextStyle: _default.appBarTheme.titleTextStyle!.copyWith(
         color: AppLightColors.onSurface,
+        fontFamily: "Poppins",
       ),
     ),
     dialogTheme: DialogTheme(backgroundColor: AppLightColors.surface),

@@ -62,6 +62,7 @@ class _RegistroDeUsuarioModeradorPanelState
       init: controller,
       builder:
           (controller) => ResponsiveLayoutDialog(
+           smTarget: SmTarget.bottomsheet, 
             child: Obx(
               () => CustomScrollView(
                 controller: scroll,

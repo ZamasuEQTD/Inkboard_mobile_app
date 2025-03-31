@@ -10,9 +10,12 @@ class RegistroUsuarioModeracionController extends GetxController {
 
   final RxList<HiloComentadoRegistro> comentariosHistorial = RxList([]);
   final RxBool comentariosCargando = false.obs;
+  bool hallegadoAlFinalComentarios = false;
+
 
   final RxList<HiloPosteadoRegistro> hilosHistorial = RxList([]);
   final RxBool hilosCargando = false.obs;
+  bool hallegadoAlFinalHilos = false;
 
   final Rx<RegistroSeleccionado> seleccionado = RegistroSeleccionado.hilos.obs;
 
@@ -37,17 +40,25 @@ class RegistroUsuarioModeracionController extends GetxController {
   }
 
   Future cargarComentarios() async {
+    if(comentariosCargando.value || hallegadoAlFinalComentarios) return;
+
     comentariosCargando.value = true;
     var response = await _repository.getComentariosHistorial(id, ultimoComentario: this.comentariosHistorial.lastOrNull?.id);
 
     response.fold((l) {}, (r) {
       comentariosHistorial.addAll(r);
+
+      if(r.isEmpty) {
+        hallegadoAlFinalComentarios = true; 
+      }
     });
 
     comentariosCargando.value = false;
   }
 
   Future cargarHilos() async {
+    if(hilosCargando.value || hallegadoAlFinalHilos) return;
+
     hilosCargando.value = true;
 
     final ultimo = hilosHistorial.lastOrNull; 
@@ -56,6 +67,10 @@ class RegistroUsuarioModeracionController extends GetxController {
 
     response.fold((l) {}, (r) {
       hilosHistorial.addAll(r);
+
+      if(r.isEmpty) {
+        hallegadoAlFinalHilos = true;
+      }
     });
 
     hilosCargando.value = false;
