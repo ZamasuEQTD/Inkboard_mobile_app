@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => Get.dialog(LoginDialog()),
+                    onPressed: () => LoginDialog.show(),
                     child: Text("Iniciar sesión"),
                   ),
                 ),
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => Get.dialog(RegistroDialog()),
+                    onPressed: () => RegistroDialog.show(),
 
                     child: Text("Registrarse"),
                   ),
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   fixedSize: WidgetStatePropertyAll(Size.square(50)),
                 ),
-                onPressed: () => Get.dialog(PostearHiloDialog()),
+                onPressed: () => Get.dialog(PostearHiloDialog(), useSafeArea: false),
                 icon: Icon(Icons.add, size: 25),
               ),
             ),

@@ -43,7 +43,7 @@ class AutenticacionRequerida extends StatelessWidget {
             onPressed: () {
               Get.back();
 
-              Get.dialog(RegistroDialog());
+              Get.dialog(RegistroDialog(),useSafeArea: false);
             },
             child: Text("Registrarse"),
           ),

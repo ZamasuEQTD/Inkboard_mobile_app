@@ -10,6 +10,9 @@ class LoginDialog extends StatefulWidget {
 
   @override
   State<LoginDialog> createState() => _LoginDialogState();
+
+
+  static void show()=> Get.dialog(LoginDialog(),useSafeArea: false);
 }
 
 class _LoginDialogState extends State<LoginDialog> {

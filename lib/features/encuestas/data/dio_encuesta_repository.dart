@@ -13,7 +13,7 @@ class DioEncuestaRepository extends IEncuestaRepository {
   Future<Either<Failure, Unit>> votar(String encuesta, String respuesta) async {
     try {
       final response = await dio.post(
-        '/encuestas/votar/encuesta/$encuesta/respuesta/$respuesta',
+        'encuestas/votar/encuesta/$encuesta/respuesta/$respuesta',
       );
 
       if (response.isFailure) {

@@ -10,6 +10,8 @@ class RegistroDialog extends StatefulWidget {
 
   @override
   State<RegistroDialog> createState() => _RegistroDialogState();
+
+  static void show()=> Get.dialog(RegistroDialog(),useSafeArea: false);
 }
 
 class _RegistroDialogState extends State<RegistroDialog> {

@@ -17,7 +17,7 @@ class DioRegistroRepository extends IRegistrosRepository {
   }) async{
     try {
       Response response = await dio.get(
-        "/registros/comentarios/usuario/$id",
+        "registros/comentarios/usuario/$id",
         queryParameters: {
           if (ultimoComentario != null) 'ultimo_comentario': ultimoComentario,
         },
@@ -51,7 +51,7 @@ class DioRegistroRepository extends IRegistrosRepository {
   }) async {
     try {
       Response response = await dio.get(
-        "/registros/hilos-posteados/usuario/$id",
+        "registros/hilos-posteados/usuario/$id",
         queryParameters: {
           if (ultimoHilo != null) 'ultimo_hilo': ultimoHilo,
         },
@@ -80,7 +80,7 @@ class DioRegistroRepository extends IRegistrosRepository {
   @override
   Future<Either<Failure, RegistroUsuario>> getRegistroUsuario(String id) async {
     try {
-      Response response = await dio.get("/registros/usuario/$id");
+      Response response = await dio.get("registros/usuario/$id");
 
       if (response.isFailure) {
         return Left(response.toFailure);

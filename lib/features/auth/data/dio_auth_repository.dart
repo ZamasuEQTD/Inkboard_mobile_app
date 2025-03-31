@@ -13,7 +13,7 @@ class DioAuthRepository extends IAuthRepository {
   Future<Either<Failure, String>> login({required String usuario, required String password}) async {
     try {
       Response response = await dio.post(
-        "/auth/login",
+        "auth/login",
         data: {
           "username": usuario,
           "password": password,

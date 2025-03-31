@@ -16,7 +16,7 @@ class DioNotificacionesRepository extends INotificacionesRepository {
   }) async {
     try {
       final response = await dio.get(
-        '/notificaciones',
+        'notificaciones',
         queryParameters: {'ultima_notificacion': ultimaNotificacion},
       );
 
@@ -37,7 +37,7 @@ class DioNotificacionesRepository extends INotificacionesRepository {
   @override
   Future<Either<Failure, Unit>> leerNotificacion({required String id}) async {
     try {
-      var resposse = await dio.post('/notificaciones/$id/leer');
+      var resposse = await dio.post('notificaciones/$id/leer');
 
       if (resposse.isFailure) return Left(resposse.toFailure);
 
@@ -50,7 +50,7 @@ class DioNotificacionesRepository extends INotificacionesRepository {
   @override
   Future<Either<Failure, Unit>> leerTodas() async {
     try {
-      var response = await dio.post('/notificaciones/leer-todas');
+      var response = await dio.post('notificaciones/leer-todas');
 
       if (response.isFailure) return Left(response.toFailure);
 

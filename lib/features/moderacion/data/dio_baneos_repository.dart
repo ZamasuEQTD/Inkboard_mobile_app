@@ -19,7 +19,7 @@ class DioBaneosRepository extends IBaneosRepository {
   }) async {
     try {
       Response response = await dio.post(
-        "/baneos/banear/$id",
+        "baneos/banear/$id",
         data: {
           "razon": razon.index,
           "duracion": duracion.index,
@@ -40,7 +40,7 @@ class DioBaneosRepository extends IBaneosRepository {
   @override
   Future<Either<Failure, Unit>> desbanear({required String id})async {
      try {
-      Response response = await dio.post("/baneos/desbanear/$id");
+      Response response = await dio.post("baneos/desbanear/$id");
 
       if (response.isFailure) {
         return Left(response.toFailure);
