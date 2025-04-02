@@ -2,8 +2,10 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
@@ -17,6 +19,7 @@ import 'package:inkboard/shared/presentation/widgets/effects/gradient/animated_g
 import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../logic/controllers/hilo_page_controller.dart';
 
@@ -56,16 +59,14 @@ class ComentarioWidget extends StatelessWidget {
                           if (comentario.respondidoPor.isNotEmpty)
                             SeleccionableItem(
                               titulo: "Ver historial de respuestas",
-                              onTap:
-                                  () => Get.bottomSheet(
-                                    HistorialDeComentariosBottomSheet(
-                                      comentarios:
-                                          Get.find<HiloPageController>()
-                                              .getPorTags(
-                                                comentario.respondidoPor,
-                                              ),
-                                    ),
+                              onTap: () {
+                                Get.back();
+                                HistorialDeComentariosBottomSheet.show(
+                                  Get.find<HiloPageController>().getPorTags(
+                                    comentario.respondidoPor,
                                   ),
+                                );
+                              },
                             ),
                           SeleccionableItem(
                             titulo: "Copiar titulo",
@@ -169,7 +170,7 @@ class ComentarioWidget extends StatelessWidget {
                               fontSize: 12,
                             ),
                             child: Wrap(
-                              spacing: 2,
+                              spacing: 1.5,
                               runSpacing: 2,
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: tags,
@@ -187,9 +188,11 @@ class ComentarioWidget extends StatelessWidget {
                     ),
                   ],
                 ),
+                Gap(3),
                 Wrap(spacing: 2, runSpacing: 4, children: taggueadoPor),
+                Gap(2),
                 if (comentario.media != null) media,
-                Text(comentario.texto),
+                Texto(comentario.texto),
               ],
             ),
           ),
@@ -230,16 +233,11 @@ class ComentarioWidget extends StatelessWidget {
             (tag) => GestureDetector(
               onTap: () {
                 HiloPageController c = Get.find<HiloPageController>();
-                Get.bottomSheet(
-                  HistorialDeComentariosBottomSheet(
-                    comentarios: c.getPorTags([tag]),
-                  ),
-                  isScrollControlled: true,
-                );
+                HistorialDeComentariosBottomSheet.show(c.getPorTags([tag]));
               },
               child: Text(
                 ">>$tag",
-                style: TextStyle(color: CupertinoColors.link, fontSize: 16),
+                style: TextStyle(color: CupertinoColors.link, fontSize: 15),
               ),
             ),
           )
@@ -379,6 +377,7 @@ class MultiInvertido extends LinearGradientAnimation {
 
 class HistorialDeComentariosBottomSheet extends StatelessWidget {
   final List<ComentarioModel> comentarios;
+
   const HistorialDeComentariosBottomSheet({
     super.key,
     required this.comentarios,
@@ -387,6 +386,7 @@ class HistorialDeComentariosBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       onClosing: () {},
       builder:
@@ -416,6 +416,196 @@ class HistorialDeComentariosBottomSheet extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+    );
+  }
+
+  static int showing = 0;
+
+  static show(List<ComentarioModel> comentarios) async {
+    var bottomsheet = Get.bottomSheet(
+      HistorialDeComentariosBottomSheet(comentarios: comentarios),
+      isScrollControlled: true,
+      barrierColor: showing > 0 ? Colors.transparent : null,
+    );
+    showing++;
+    await bottomsheet;
+    showing--;
+  }
+}
+
+enum TipoDeTexto { tag, greenText, link, normal }
+
+class TextoDeComentario {
+  final TipoDeTexto tipo;
+  final String texto;
+
+  const TextoDeComentario({required this.tipo, required this.texto});
+}
+
+class Texto extends StatelessWidget {
+  final String texto;
+  const Texto(this.texto, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        children: parseText(texto),
+        style: TextStyle(fontSize: 15),
+      ),
+    );
+  }
+
+  List<TextSpan> parseText(String text) {
+    final List<TextSpan> spans = [];
+    int currentIndex = 0;
+
+    // Regex ordenados por prioridad (de mayor a menor)
+    final regexStyles = [
+      {
+        'regex': RegExp(r'>>[A-Z0-9]{8}'),
+        'style': TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
+        'onTap': (String match) {
+          HistorialDeComentariosBottomSheet.show(
+            Get.find<HiloPageController>().getPorTags([match.substring(2)]),
+          );
+        },
+      },
+      {
+        'regex': RegExp(
+          r'(https?://)(www\.)?([a-zA-Z0-9]([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,})(\/[^ ]*)?(\?[^ ]*)?',
+        ),
+        'style': TextStyle(color: Colors.blue),
+        'onTap': (String match) {
+          Get.bottomSheet(AbrirEnlaceExternoBottomSheet(url: match));
+        },
+      },
+      {
+        'regex': RegExp(r'^>\w+', multiLine: true),
+        'style': TextStyle(color: Colors.green),
+      },
+    ];
+
+    // Procesar el texto en el orden de prioridad
+    while (currentIndex < text.length) {
+      bool matched = false;
+
+      for (final entry in regexStyles) {
+        final regex = entry['regex'] as RegExp;
+        final onTap = entry['onTap'] as void Function(String)?;
+        final match = regex.firstMatch(text.substring(currentIndex));
+
+        if (match != null && match.start == 0) {
+          // Añadir el texto previo sin formato (si existe)
+          if (match.start > 0) {
+            spans.add(
+              TextSpan(
+                text: text.substring(currentIndex, currentIndex + match.start),
+                style: const TextStyle(color: Colors.black),
+              ),
+            );
+          }
+
+          // Añadir el texto coincidente con su estilo
+          spans.add(
+            TextSpan(
+              text: match.group(0),
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      if (onTap != null) {
+                        onTap(match.group(0)!);
+                      }
+                    },
+              style: entry['style'] as TextStyle?,
+            ),
+          );
+
+          currentIndex += match.end;
+          matched = true;
+          break; // Pasar al siguiente segmento del texto
+        }
+      }
+
+      // Si no hubo coincidencia, añadir el carácter actual como texto normal
+      if (!matched) {
+        spans.add(
+          TextSpan(
+            text: text[currentIndex],
+            style: const TextStyle(color: Colors.black),
+          ),
+        );
+        currentIndex++;
+      }
+    }
+
+    return spans;
+  }
+}
+
+class AbrirEnlaceExternoBottomSheet extends StatelessWidget {
+  final String url;
+  const AbrirEnlaceExternoBottomSheet({super.key, required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomSheet(
+      onClosing: () {},
+      builder:
+          (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Estás a punto de salir de la aplicación para visitar un sitio externo.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Color.fromRGBO(108, 117, 125, 1)),
+                ),
+                const SizedBox(height: 24),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ColoredBox(
+                    color: Theme.of(context).colorScheme.secondary,
+                    // color: const Color(0xffE9ECEF),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          url,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color.fromRGBO(73, 80, 87, 1),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "No podemos garantizar la seguridad o el contenido de sitios externos. ¿Deseas continuar?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Color.fromRGBO(108, 117, 125, 1)),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (!await launchUrl(Uri.parse(url))) {
+                        throw Exception('Could not launch $url');
+                      }
+
+                      if (context.mounted) Get.back();
+                    },
+                    child: const Text("Continuar"),
+                  ),
+                ),
+              ],
+            ).paddingOnly(bottom: 10),
           ),
     );
   }
