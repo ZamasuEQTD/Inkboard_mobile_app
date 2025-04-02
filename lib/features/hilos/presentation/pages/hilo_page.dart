@@ -28,7 +28,6 @@ import 'package:inkboard/shared/presentation/util/extensions/duration_extension.
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
 import 'package:inkboard/shared/presentation/widgets/grupo_seleccionable/grupo_seleccionable.dart';
 import 'package:inkboard/shared/presentation/widgets/tag.dart';
-import 'package:popover/popover.dart';
 
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -94,7 +93,11 @@ class _HiloPageState extends State<HiloPage> {
                             child:
                                 controller.hilo.value == null
                                     ? HiloBodySkeleton()
-                                    : HiloBody(hilo: controller.hilo.value!),
+                                    : Obx(
+                                      () => HiloBody(
+                                        hilo: controller.hilo.value!,
+                                      ),
+                                    ),
                           ),
                         ),
                       ),
@@ -139,7 +142,11 @@ class _HiloPageState extends State<HiloPage> {
                               child:
                                   controller.hilo.value == null
                                       ? HiloBodySkeleton()
-                                      : HiloBody(hilo: controller.hilo.value!),
+                                      : Obx(
+                                        () => HiloBody(
+                                          hilo: controller.hilo.value!,
+                                        ),
+                                      ),
                             ),
                           ),
                         ),
@@ -316,33 +323,7 @@ class HiloBody extends StatelessWidget {
             ),
           ).marginOnly(bottom: 10),
           portada.marginOnly(bottom: 10),
-          if (hilo.encuesta != null)
-            Encuesta(
-              encuesta: hilo.encuesta!,
-              onVotar: (respuesta) {
-                var response = GetIt.I.get<IEncuestaRepository>().votar(
-                  hilo.encuesta!.id,
-                  respuesta,
-                );
-
-                response.then(
-                  (value) => value.fold(
-                    (l) {
-                      log(l.toString());
-                    },
-                    (r) {
-                      HiloPageController controller = Get.find();
-
-                      controller.hilo.value = hilo.copyWith(
-                        encuesta: hilo.encuesta!.copyWith(
-                          respuestaVotada: respuesta,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+          if (hilo.encuesta != null) EncuestaHilo(encuesta: hilo.encuesta!),
           SelectableText(
             hilo.titulo,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -722,6 +703,59 @@ class VerPickedMediaBottomSheet extends StatelessWidget {
               ],
             ).paddingSymmetric(vertical: 10, horizontal: 10),
           ),
+    );
+  }
+}
+
+class EncuestaHilo extends StatefulWidget {
+  final EncuestaModel encuesta;
+
+  const EncuestaHilo({super.key, required this.encuesta});
+
+  @override
+  State<EncuestaHilo> createState() => _EncuestaHiloState();
+}
+
+class _EncuestaHiloState extends State<EncuestaHilo> {
+  late final Rx<EncuestaModel> encuesta = Rx(widget.encuesta);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+      () => Encuesta(
+        encuesta: encuesta.value,
+        onVotado: (respuesta) {
+          encuesta.value = encuesta.value.copyWith(
+            respuestas:
+                encuesta.value.respuestas
+                    .map(
+                      (e) => e.copyWith(
+                        votos: e.id == respuesta ? e.votos + 1 : e.votos,
+                      ),
+                    )
+                    .toList(),
+          );
+        },
+        onVotar: (respuesta) {
+          var response = GetIt.I.get<IEncuestaRepository>().votar(
+            encuesta.value.id,
+            respuesta,
+          );
+
+          response.then(
+            (value) => value.fold(
+              (l) {
+                log(l.toString());
+              },
+              (r) {
+                encuesta.value = encuesta.value.copyWith(
+                  respuestaVotada: respuesta,
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

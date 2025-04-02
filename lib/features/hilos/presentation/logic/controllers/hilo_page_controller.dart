@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,17 @@ class HiloPageController extends GetxController {
   final IHilosRepository _repository = GetIt.I.get();
 
   HiloPageController({required this.id});
+
+  @override
+  void onInit() {
+    hilo.listen((p0) {
+      if (p0 == null) return;
+
+      log(p0.titulo);
+    },);
+
+    super.onInit();
+  }
 
   void cargarHilo() async {
     cargandoHilo.value = true;

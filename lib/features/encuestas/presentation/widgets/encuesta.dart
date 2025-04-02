@@ -1,10 +1,8 @@
-import 'package:flash/flash.dart';
-import 'package:flash/flash_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:inkboard/features/encuestas/domain/models/encuesta.dart';
+import 'package:inkboard/features/encuestas/presentation/encuesta_signalr_hub.dart';
 
 class EncuestaController extends GetxController {
   final Rx<String?> seleccionado = Rx(null);
@@ -24,8 +22,8 @@ class Encuesta extends StatefulWidget {
   final EncuestaModel encuesta;
 
   final void Function(String respuesta) onVotar;
-
-  const Encuesta({super.key, required this.encuesta, required this.onVotar});
+  final void Function(String respuesta) onVotado;
+  const Encuesta({super.key, required this.encuesta, required this.onVotar, required this.onVotado});
 
   @override
   State<Encuesta> createState() => _EncuestaState();
@@ -33,6 +31,16 @@ class Encuesta extends StatefulWidget {
 
 class _EncuestaState extends State<Encuesta> {
   final EncuestaController controller = EncuestaController();
+
+  @override
+  void initState() {
+    var hub = EncuestaSignalRHub()..init(  widget.encuesta.id);
+
+    hub.onUltimoVoto.listen((event) {
+      widget.onVotado(event);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -249,3 +257,4 @@ class LinearPercentageBackground extends StatelessWidget {
     );
   }
 }
+
