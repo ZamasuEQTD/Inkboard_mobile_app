@@ -37,4 +37,11 @@ class HomePageController extends GetxController {
 
     cargandoPortadas.value = false;
   }
+
+  void reiniciar() {
+    portadas.clear();
+    ultimaPortada = null;
+    hayMasContenido.value = true;
+    cargarPortadas();
+  }
 }

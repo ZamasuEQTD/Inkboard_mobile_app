@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -128,31 +131,39 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          CustomScrollView(
-            controller: scroll,
-            slivers: [
-              HomeAppBar(),
-              Obx(
-                () => SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 4,
-                  ).copyWith(bottom: 10),
-                  sliver: PortadaGrid(
-                    cargando: controller.cargandoPortadas.value,
-                    portadas: controller.portadas,
-                    builder:
-                        (child) => MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            onTap:
-                                () => Get.toNamed("/hilo/${child.portada.id}"),
-                            child: child,
+          CustomMaterialIndicator(
+             onRefresh: () async {
+              this.controller.reiniciar();
+              },
+              indicatorBuilder:  (context, controller) => CircularProgressIndicator(),
+            child: CustomScrollView(
+              controller: scroll,
+              physics: AlwaysScrollableScrollPhysics(),
+              slivers: [
+                HomeAppBar(),
+                Obx(
+                  () => SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ).copyWith(bottom: 10),
+                    sliver: PortadaGrid(
+                      cargando: controller.cargandoPortadas.value,
+                      portadas: controller.portadas,
+                      builder:
+                          (child) => MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap:
+                                  () => Get.toNamed("/hilo/${child.portada.id}"),
+                              child: child,
+                            ),
                           ),
-                        ),
+                    ),
                   ),
                 ),
-              ),
-            ],
+                 
+              ],
+            ),
           ),
           //postear  hilo button
           Positioned(
