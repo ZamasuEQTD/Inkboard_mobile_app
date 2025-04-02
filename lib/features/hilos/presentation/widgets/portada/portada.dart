@@ -246,7 +246,7 @@ class OpcionesDePortadaBottomSheet extends StatelessWidget {
                     SeleccionableItem(
                       titulo:
                           portada.banderas.esSticky
-                              ? "Eliminar stitkcy"
+                              ? "Eliminar sticky"
                               : "Establecer sticky",
                       onTap: () {
                         var repo = GetIt.I.get<IHilosRepository>();
@@ -268,7 +268,7 @@ class OpcionesDePortadaBottomSheet extends StatelessWidget {
                         );
                       },
                     ),
-                    SeleccionableItem(titulo: "Ver usuario"),
+                    SeleccionableItem(titulo: "Ver usuario", onTap: () => Get.bottomSheet(RegistroDeUsuarioModeradorPanel(usuario: this.portada.autorId!),),),
                   ],
                 ),
             ],
