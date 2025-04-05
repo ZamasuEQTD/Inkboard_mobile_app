@@ -15,6 +15,13 @@ extension NetworkExceptionExtensions on Exception {
 
 extension DioExtensions on DioException {
   Failure get toDioFailure {
+
+    if(response != null && response!.data != null){
+      var data = response!.data;
+
+      return Failure(code: data["title"], descripcion: data["detail"]?? "Error del servidor");
+    }
+
     return NetworkFailures.unknow;
   }
 }
