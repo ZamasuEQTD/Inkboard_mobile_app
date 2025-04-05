@@ -113,5 +113,6 @@ class AppThemes {
         foregroundColor: WidgetStatePropertyAll(AppLightColors.onPrimary),
       ),
     ),
+  
   );
 }

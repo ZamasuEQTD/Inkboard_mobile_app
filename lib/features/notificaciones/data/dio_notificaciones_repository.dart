@@ -24,7 +24,7 @@ class DioNotificacionesRepository extends INotificacionesRepository {
 
       final List<Notificacion> notificaciones = [];
 
-      for (var element in response.data) {
+      for (var element in response.data["data"]) {
         notificaciones.add(Notificacion.fromJson(element));
       }
 

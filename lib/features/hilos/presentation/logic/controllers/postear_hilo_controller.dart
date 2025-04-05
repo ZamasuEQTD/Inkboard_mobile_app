@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/categorias/domain/models/subcategoria.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
-import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
 
 class Spoileable<T> extends Equatable {

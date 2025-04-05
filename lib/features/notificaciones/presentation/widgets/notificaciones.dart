@@ -9,7 +9,8 @@ class MisNotificacionesLayout extends StatefulWidget {
   const MisNotificacionesLayout({super.key});
 
   @override
-  State<MisNotificacionesLayout> createState() => _MisNotificacionesLayoutState();
+  State<MisNotificacionesLayout> createState() =>
+      _MisNotificacionesLayoutState();
 }
 
 class _MisNotificacionesLayoutState extends State<MisNotificacionesLayout> {
@@ -21,6 +22,7 @@ class _MisNotificacionesLayoutState extends State<MisNotificacionesLayout> {
 
   @override
   void initState() {
+    controller.cargar();
     scroll.onBottom(() {
       controller.cargar();
     });
@@ -31,20 +33,33 @@ class _MisNotificacionesLayoutState extends State<MisNotificacionesLayout> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayoutDialog(
+      title: "Mis notificaciones",
       child: CustomScrollView(
         controller: scroll,
         slivers: [
-          SliverList.builder(
-            itemCount: controller.notificaciones.length,
-            itemBuilder: (context, index) {
-              if (index >= controller.notificaciones.length) {
-                return const NotificacionSkeletonItem();
-              }
+          Obx(
+            () => SliverList.builder(
+              itemCount: controller.notificaciones.length,
+              itemBuilder: (context, index) {
+                Widget child() {
+                  if (index >= controller.notificaciones.length) {
+                    return const NotificacionSkeletonItem();
+                  }
 
-              final notificacion = controller.notificaciones[index];
+                  final notificacion = controller.notificaciones[index];
 
-              return NotificacionItem(notificacion: notificacion);
-            },
+                  return NotificacionItem(notificacion: notificacion);
+                }
+
+                return Container(
+                  margin:
+                      index != controller.notificaciones.length
+                          ? const EdgeInsets.only(bottom: 5)
+                          : null,
+                  child: child(),
+                );
+              },
+            ),
           ),
         ],
       ),

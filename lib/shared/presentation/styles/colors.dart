@@ -20,7 +20,7 @@ class AppLightColors {
 
   static final secondary = Colors.grey.shade200;
 
-  static final onSecondary =  Color.fromRGBO(115, 115, 115, 0.9);
+  static final onSecondary =  Color.fromRGBO(108, 117, 125, 1);
 
   static final outlinedVariant = Colors.grey.shade300;
 

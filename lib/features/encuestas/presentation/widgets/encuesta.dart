@@ -23,7 +23,12 @@ class Encuesta extends StatefulWidget {
 
   final void Function(String respuesta) onVotar;
   final void Function(String respuesta) onVotado;
-  const Encuesta({super.key, required this.encuesta, required this.onVotar, required this.onVotado});
+  const Encuesta({
+    super.key,
+    required this.encuesta,
+    required this.onVotar,
+    required this.onVotado,
+  });
 
   @override
   State<Encuesta> createState() => _EncuestaState();
@@ -34,7 +39,7 @@ class _EncuestaState extends State<Encuesta> {
 
   @override
   void initState() {
-    var hub = EncuestaSignalRHub()..init(  widget.encuesta.id);
+    var hub = EncuestaSignalRHub()..init(widget.encuesta.id);
 
     hub.onUltimoVoto.listen((event) {
       widget.onVotado(event);
@@ -69,16 +74,18 @@ class _EncuestaState extends State<Encuesta> {
                             ],
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 14
                             ),
                           ),
                         ),
                         Obx(
                           () => ElevatedButton(
                             style:
-                                controller.haySeleccionado
+                                  !controller.haySeleccionado
                                     ? ButtonStyle(
+                                      foregroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.onSecondary),
                                       backgroundColor: WidgetStatePropertyAll(
-                                        Color.fromRGBO(107, 114, 128, 0.55),
+                                        Theme.of(context).colorScheme.secondary,
                                       ),
                                     )
                                     : null,
@@ -159,56 +166,83 @@ class RespuestaEncuesta extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onSeleccionar,
-      child: LinearPercentageBackground(
-        color: Color.fromRGBO(209, 213, 219, 0.45),
-        border: Border.all(
-          color:
-              isVotado || isSeleccionado
-                  ? Theme.of(context).colorScheme.outline
-                  : Color(0x80D1D5DB),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color:
+                isVotado || isSeleccionado
+                    ? Theme.of(context).colorScheme.outline
+                    : Color(0x80D1D5DB),
+          ),
         ),
-        borderRadius: BorderRadius.circular(10),
-        porcentaje: porcentaje,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: ClipRect(
+          child: Stack(
             children: [
-              Flexible(child: Text(respuesta.respuesta)),
-              Row(
-                spacing: 2,
-                children: [
-                  Text(
-                    "${respuesta.votos} votos",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color.fromRGBO(115, 115, 115, 0.9),
-                    ),
-                  ),
-                  Text(
-                    "${(porcentaje * 100).toInt()}%",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-
-                  if (isSeleccionado)
-                    ClipOval(
-                      child: ColoredBox(
-                        color: Color.fromRGBO(115, 115, 115, 0.45),
-                        child: SizedBox.square(
-                          dimension: 20,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 2),
-                            child: FittedBox(
-                              child: Icon(Icons.check, color: Colors.white),
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: LayoutBuilder(
+                    builder:
+                        (context, constraints) => Row(mainAxisAlignment: MainAxisAlignment.start,children: [AnimatedSize(
+                            duration: Duration(milliseconds: 500),
+                            child: ColoredBox(
+                              color: Color.fromRGBO(209, 213, 219, 0.45),
+                              child: SizedBox(
+                                height: constraints.maxHeight,
+                                width: constraints.maxWidth * porcentaje,
+                              ),
                             ),
+                          ),],)
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(child: Text(respuesta.respuesta)),
+                    Row(
+                      spacing: 2,
+                      children: [
+                        Text(
+                          "${respuesta.votos} votos",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color.fromRGBO(115, 115, 115, 0.9),
                           ),
                         ),
-                      ),
-                    ).animate().scale(
-                      curve: Curves.bounceInOut,
-                      duration: Duration(milliseconds: 300),
+                        Text(
+                          "${(porcentaje * 100).toInt()}%",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+
+                        if (isSeleccionado)
+                          ClipOval(
+                            child: ColoredBox(
+                              color: Color.fromRGBO(115, 115, 115, 0.45),
+                              child: SizedBox.square(
+                                dimension: 20,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2),
+                                  child: FittedBox(
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ).animate().scale(
+                            curve: Curves.bounceInOut,
+                            duration: Duration(milliseconds: 300),
+                          ),
+                      ],
                     ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -217,44 +251,3 @@ class RespuestaEncuesta extends StatelessWidget {
     );
   }
 }
-
-class LinearPercentageBackground extends StatelessWidget {
-  final Color color;
-
-  final double porcentaje;
-
-  final BorderRadius? borderRadius;
-
-  final Border? border;
-
-  final Widget? child;
-  const LinearPercentageBackground({
-    super.key,
-    required this.color,
-    required this.porcentaje,
-    this.borderRadius,
-    this.border,
-    this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color, Colors.transparent], // Verde y transparente
-          stops: [
-            porcentaje,
-            porcentaje,
-          ], // El verde ocupa el 50% y el transparente el otro 50%
-          begin: Alignment.centerLeft, // Comienza desde la izquierda
-          end: Alignment.centerRight, // Termina en la derecha
-        ),
-        borderRadius: borderRadius,
-        border: border,
-      ),
-      child: child,
-    );
-  }
-}
-

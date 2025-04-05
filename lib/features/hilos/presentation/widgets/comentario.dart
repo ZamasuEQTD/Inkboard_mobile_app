@@ -69,7 +69,7 @@ class ComentarioWidget extends StatelessWidget {
                               },
                             ),
                           SeleccionableItem(
-                            titulo: "Copiar titulo",
+                            titulo: "Copiar comentario",
                             onTap: () {
                               Clipboard.setData(
                                 ClipboardData(text: comentario.texto),
@@ -192,7 +192,7 @@ class ComentarioWidget extends StatelessWidget {
                 Wrap(spacing: 2, runSpacing: 4, children: taggueadoPor),
                 Gap(2),
                 if (comentario.media != null) media,
-                Texto(comentario.texto),
+                TextoComentario(comentario.texto),
               ],
             ),
           ),
@@ -237,7 +237,7 @@ class ComentarioWidget extends StatelessWidget {
               },
               child: Text(
                 ">>$tag",
-                style: TextStyle(color: CupertinoColors.link, fontSize: 15),
+                style: TextStyle(color: CupertinoColors.link, fontSize: 12),
               ),
             ),
           )
@@ -386,7 +386,9 @@ class HistorialDeComentariosBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
-      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       onClosing: () {},
       builder:
@@ -434,18 +436,9 @@ class HistorialDeComentariosBottomSheet extends StatelessWidget {
   }
 }
 
-enum TipoDeTexto { tag, greenText, link, normal }
-
-class TextoDeComentario {
-  final TipoDeTexto tipo;
+class TextoComentario extends StatelessWidget {
   final String texto;
-
-  const TextoDeComentario({required this.tipo, required this.texto});
-}
-
-class Texto extends StatelessWidget {
-  final String texto;
-  const Texto(this.texto, {super.key});
+  const TextoComentario(this.texto, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -554,16 +547,26 @@ class AbrirEnlaceExternoBottomSheet extends StatelessWidget {
       onClosing: () {},
       builder:
           (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 5),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Ingresar a enlace",
+
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text(
                   "Estás a punto de salir de la aplicación para visitar un sitio externo.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Color.fromRGBO(108, 117, 125, 1)),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: ColoredBox(
@@ -576,24 +579,27 @@ class AbrirEnlaceExternoBottomSheet extends StatelessWidget {
                         child: Text(
                           url,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Color.fromRGBO(73, 80, 87, 1),
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                const SizedBox(height: 12),
+                Text(
                   "No podemos garantizar la seguridad o el contenido de sitios externos. ¿Deseas continuar?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Color.fromRGBO(108, 117, 125, 1)),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child: OutlinedButton(
                     onPressed: () async {
                       if (!await launchUrl(Uri.parse(url))) {
                         throw Exception('Could not launch $url');

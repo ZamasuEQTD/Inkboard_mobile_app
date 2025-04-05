@@ -224,7 +224,7 @@ class _PostearHiloDialogState extends State<PostearHiloDialog> {
 
   Positioned opcionesDePortada() {
     return Positioned(
-      right: -20,
+      right: -10,
       top: -20,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

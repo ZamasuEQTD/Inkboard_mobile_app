@@ -22,7 +22,6 @@ class _ReveladorDeContenidoState extends State<ReveladorDeContenido> {
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Stack(
         children: [
           widget.child,
@@ -43,11 +42,11 @@ class _ReveladorDeContenidoState extends State<ReveladorDeContenido> {
                                 style: ButtonStyle(
                                   shape: WidgetStatePropertyAll(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
                                   ),
                                   padding: WidgetStatePropertyAll(
-                                    EdgeInsets.symmetric(vertical: 22),
+                                    EdgeInsets.symmetric(vertical: 22,horizontal: 5),
                                   ),
                                   side: WidgetStatePropertyAll(
                                     BorderSide(color: Colors.white),

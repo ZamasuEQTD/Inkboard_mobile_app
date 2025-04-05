@@ -1,9 +1,12 @@
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/app/presentation/logic/controllers/app_failure_controller.dart';
+import 'package:inkboard/features/app/presentation/widgets/snackbar.dart';
 import 'package:inkboard/features/core/domain/util/tag_util.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
@@ -40,7 +43,7 @@ class HiloPageController extends GetxController {
       if (p0 == null) return;
 
       log(p0.titulo);
-    },);
+    });
 
     super.onInit();
   }
@@ -82,7 +85,7 @@ class HiloPageController extends GetxController {
 
     if (haTagueadoA(tag)) return;
 
-    comentario.text += ">>$tag";
+    comentario.text += ">>$tag ";
   }
 
   void comentar() async {
@@ -90,11 +93,17 @@ class HiloPageController extends GetxController {
 
     comentandoHilo.value = true;
 
-    await _repository.comentar(
+    var resonse = await _repository.comentar(
       id,
       comentario: comentario.text,
       file: files.firstOrNull,
     );
+    resonse.fold((l) {
+      Get.find<AppFailureController>().setFailure(l);
+    }, (r) {
+      this.comentario.text = "";
+      files.value = [];
+    });
 
     comentandoHilo.value = false;
   }

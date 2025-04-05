@@ -91,7 +91,7 @@ class DioHilosRepository extends IHilosRepository {
   }) async {
     var form = FormData.fromMap({
       "texto": comentario,
-      "file": file != null ? await MultipartFile.fromFile(file.source) : null,
+      "file": file != null ? await MultipartFile.fromFile(file.source, contentType: MediaType.parse(file.contentType),) : null,
     });
 
     try {
@@ -124,7 +124,7 @@ class DioHilosRepository extends IHilosRepository {
   @override
   Future<Either<Failure, Unit>> eliminarSticky(String hilo) async {
     try {
-      var response = await dio.post("hilos/eliminar-sticky/$hilo");
+      var response = await dio.delete("hilos/eliminar-sticky/$hilo");
 
       if (response.isFailure) return Left(response.toFailure);
 

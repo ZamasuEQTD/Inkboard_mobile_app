@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/notificaciones/domain/inotificaciones_repository.dart';
+import 'package:inkboard/features/notificaciones/presentation/logic/mis_notificaciones_controller.dart';
 import 'package:inkboard/shared/presentation/util/extensions/duration_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -17,9 +20,15 @@ class NotificacionItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: radius,
       child: ColoredBox(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.secondary,
         child: GestureDetector(
-          onTap: () => Get.toNamed("/hilo/${notificacion.hilo.id}"),
+          onTap: () {
+            Get.find<MisNotificacionesController>().leer(notificacion.id);
+            Get.toNamed(
+              "/hilo/${notificacion.hilo.id}",
+              parameters: {"tag": notificacion.comentario},
+            );
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,6 +40,7 @@ class NotificacionItem extends StatelessWidget {
                 ),
               ),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
@@ -41,34 +51,43 @@ class NotificacionItem extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        notificacion.hilo.titulo,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          notificacion.hilo.titulo,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      if (notificacion is ComentarioRespondido)
-                        Text((notificacion as ComentarioRespondido).respondido),
-                      Text(notificacion.content, maxLines: 4),
-                    ],
-                  ).marginOnly(left: 10),
+                        Text(
+                          notificacion.content,
+                          maxLines: 4,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color.fromRGBO(115, 115, 115, 0.8),
+                          ),
+                        ),
+                      ],
+                    ).marginOnly(left: 10),
+                  ),
                 ],
               ),
               Text(
-                "hace ${notificacion.fecha.tiempoTranscurrido}",
+                "Hace ${notificacion.fecha.tiempoTranscurrido}",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.onSecondary,
+                  fontSize: 12,
                 ),
               ),
             ],
-          ).paddingAll(10),
+          ).paddingAll(8),
         ),
       ),
-    ).marginOnly(bottom: 10).marginSymmetric(horizontal: 5);
+    ).marginSymmetric(horizontal: 5);
   }
 
   String get titulo {

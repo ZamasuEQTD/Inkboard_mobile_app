@@ -24,6 +24,9 @@ import 'package:inkboard/features/moderacion/data/dio_baneos_repository.dart';
 import 'package:inkboard/features/moderacion/data/dio_registro_repository.dart';
 import 'package:inkboard/features/moderacion/domain/ibaneos_repository.dart';
 import 'package:inkboard/features/moderacion/domain/iregistro_repository.dart';
+import 'package:inkboard/features/notificaciones/data/dio_notificaciones_repository.dart';
+
+import '../notificaciones/domain/inotificaciones_repository.dart';
 
 extension DependencyInjection on GetIt {
   GetIt addDependencies() {
@@ -55,6 +58,8 @@ extension DependencyInjection on GetIt {
     registerSingleton<IComentariosRepository>(DioComentariosRepository());
 
     registerSingleton<IEncuestaRepository>(DioEncuestaRepository());
+
+    registerSingleton<INotificacionesRepository>(DioNotificacionesRepository());
     return this;
   }
 }

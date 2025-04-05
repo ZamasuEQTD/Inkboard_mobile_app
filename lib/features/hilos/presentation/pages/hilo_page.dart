@@ -47,9 +47,9 @@ class _HiloPageState extends State<HiloPage> {
 
   final ScrollController scroll = ScrollController();
 
-  final HashMap<String, Key> destacadosKeys = HashMap();
+  final HashMap<String, GlobalKey> destacadosKeys = HashMap();
 
-  final HashMap<String, Key> comentariosKeys = HashMap();
+  final HashMap<String, GlobalKey> comentariosKeys = HashMap();
 
   @override
   void initState() {
@@ -68,6 +68,18 @@ class _HiloPageState extends State<HiloPage> {
         comentariosKeys.putIfAbsent(comentario.id, () => GlobalKey());
       }
     });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        Future.delayed(Duration(milliseconds: 1000), () {
+          String? tag = Get.parameters["tag"];
+
+          if (tag != null) {
+            HistorialDeComentariosBottomSheet.show([
+              controller.comentariosMap[tag]!,
+            ]);
+          }
+        });
+      });
 
     super.initState();
   }

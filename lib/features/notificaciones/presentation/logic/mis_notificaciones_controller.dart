@@ -9,12 +9,14 @@ class MisNotificacionesController extends GetxController {
 
   Rx<Failure?> failure = Rx(null);
 
+  RxBool historialCompleto = false.obs;
   RxBool cargandoNotificaciones = false.obs;
 
   final INotificacionesRepository _repository = GetIt.I.get();
 
-
   void cargar() async {
+    if (historialCompleto.value) return;
+
     if (cargandoNotificaciones.value) return;
 
     cargandoNotificaciones.value = true;
@@ -28,6 +30,9 @@ class MisNotificacionesController extends GetxController {
       (r) {
         notificaciones.value = [...notificaciones, ...r];
 
+        if (r.isEmpty) {
+          historialCompleto.value = true;
+        }
       },
     );
 
@@ -35,7 +40,6 @@ class MisNotificacionesController extends GetxController {
   }
 
   void leerTodas() async {
- 
     var res = await _repository.leerTodas();
 
     res.fold((l) {}, (r) => notificaciones.clear());
@@ -44,10 +48,7 @@ class MisNotificacionesController extends GetxController {
   void leer(String id) async {
     var res = await _repository.leerNotificacion(id: id);
 
-    res.fold(
-      (l) {},
-      (r) => notificaciones.removeWhere((e) => e.id == id),
-    );
+    res.fold((l) {}, (r) => notificaciones.removeWhere((e) => e.id == id));
   }
 
   void agregarNotificacion(Notificacion notificacion) {
