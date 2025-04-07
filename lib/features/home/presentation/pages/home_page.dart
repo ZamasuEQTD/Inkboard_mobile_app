@@ -8,13 +8,12 @@ import 'package:inkboard/features/auth/presentation/logic/controllers/auth_contr
 import 'package:inkboard/features/auth/presentation/widgets/autenticacion_requerida.dart';
 import 'package:inkboard/features/auth/presentation/widgets/login_dialog.dart';
 import 'package:inkboard/features/auth/presentation/widgets/registro_dialog.dart';
-import 'package:inkboard/features/core/presentation/utils/extensions/breakpoints_extensions.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/portadas-grid/portadas_grid.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/postear-hilo/postear_hilo_dialog.dart';
 import 'package:inkboard/features/home/presentation/logic/controllers/home_page_controller.dart';
+import 'package:inkboard/features/home/presentation/logic/home_hub_signalr.dart';
 import 'package:inkboard/features/notificaciones/presentation/widgets/notificaciones.dart';
 import 'package:inkboard/shared/presentation/util/extensions/scroll_controller_extension.dart';
-import 'package:popover/popover.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,6 +34,18 @@ class _HomePageState extends State<HomePage> {
     controller.cargarPortadas();
 
     scroll.onBottom(() => controller.cargarPortadas());
+
+    final HomeHubSignalr hub =HomeHubSignalr();
+
+    hub.init();
+
+    hub.onHiloEliminado.listen((id) {
+      controller.eliminarPortada(id);
+    });
+
+    hub.onHiloPosteado.listen((portada) {
+      controller.agregarPortada(portada);
+    });
 
     super.initState();
   }
@@ -148,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                     ).copyWith(bottom: 10),
                     sliver: PortadaGrid(
                       cargando: controller.cargandoPortadas.value,
-                      portadas: controller.portadas,
+                      portadas: controller.portadas.value,
                       builder:
                           (child) => MouseRegion(
                             cursor: SystemMouseCursors.click,

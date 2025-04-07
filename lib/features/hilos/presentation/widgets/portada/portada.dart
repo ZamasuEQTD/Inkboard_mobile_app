@@ -263,12 +263,25 @@ class OpcionesDePortadaBottomSheet extends StatelessWidget {
                     SeleccionableItem(
                       titulo: "Eliminar",
                       onTap: () {
-                        var response = GetIt.I.get<IHilosRepository>().eliminar(
-                          portada.id,
-                        );
+                        GetIt.I
+                            .get<IHilosRepository>()
+                            .eliminar(portada.id)
+                            .then(
+                              (value) => value.fold((l) {}, (r) {
+                                Get.back();
+                              }),
+                            );
                       },
                     ),
-                    SeleccionableItem(titulo: "Ver usuario", onTap: () => Get.bottomSheet(RegistroDeUsuarioModeradorPanel(usuario: this.portada.autorId!),),),
+                    SeleccionableItem(
+                      titulo: "Ver usuario",
+                      onTap:
+                          () => Get.bottomSheet(
+                            RegistroDeUsuarioModeradorPanel(
+                              usuario: this.portada.autorId!,
+                            ),
+                          ),
+                    ),
                   ],
                 ),
             ],

@@ -5,7 +5,7 @@ import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
 
 class HomePageController extends GetxController {
-  final RxList<PortadaModel> portadas = RxList();
+  final Rx<List<PortadaModel>> portadas = Rx([]);
 
   final RxBool cargandoPortadas = false.obs;
 
@@ -29,7 +29,8 @@ class HomePageController extends GetxController {
       if(r.isEmpty){
         hayMasContenido.value = false;
       } else  {
-        portadas.addAll(r);
+        portadas.value = [...portadas.value, ...r];
+
 
         ultimaPortada = r.last.id;
       }
@@ -39,9 +40,19 @@ class HomePageController extends GetxController {
   }
 
   void reiniciar() {
-    portadas.clear();
+    portadas.value = [];
     ultimaPortada = null;
     hayMasContenido.value = true;
     cargarPortadas();
+  }
+
+  void eliminarPortada(String id) {
+    portadas.value = portadas.value
+        .where((element) => element.id != id)
+        .toList();
+  }
+
+  void agregarPortada(PortadaModel portada) {
+    portadas.value = [portada, ...portadas.value];
   }
 }
