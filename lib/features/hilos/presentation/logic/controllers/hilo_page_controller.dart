@@ -23,8 +23,8 @@ class HiloPageController extends GetxController {
   final RxList<PickedFile> files = RxList([]);
 
   final HashMap<String, ComentarioModel> comentariosMap = HashMap();
-  final RxList<ComentarioModel> destacados = RxList([]);
-  final RxList<ComentarioModel> comentarios = RxList([]);
+  final Rx<List<ComentarioModel>> destacados = Rx([]);
+  final Rx<List<ComentarioModel>> comentarios = Rx([]);
   final Rx<HiloModel?> hilo = Rx(null);
 
   final RxBool cargandoHilo = false.obs;
@@ -98,12 +98,15 @@ class HiloPageController extends GetxController {
       comentario: comentario.text,
       file: files.firstOrNull,
     );
-    resonse.fold((l) {
-      Get.find<AppFailureController>().setFailure(l);
-    }, (r) {
-      this.comentario.text = "";
-      files.value = [];
-    });
+    resonse.fold(
+      (l) {
+        Get.find<AppFailureController>().setFailure(l);
+      },
+      (r) {
+        this.comentario.text = "";
+        files.value = [];
+      },
+    );
 
     comentandoHilo.value = false;
   }
@@ -120,6 +123,44 @@ class HiloPageController extends GetxController {
     }
 
     return comentarios;
+  }
+
+  void eliminarComentario(String id) {
+    comentariosMap.remove(id);
+
+    comentarios.value =
+        comentarios.value.where((element) {
+          return element.id != id;
+        }).toList();
+
+    destacados.value =
+        destacados.value.where((element) {
+          return element.id!= id;
+        }).toList();
+
+    hilo.value = hilo.value!.copyWith(
+      cantidadComentarios: hilo.value!.cantidadComentarios - 1, 
+    );
+  }
+
+  void agregarComentario(ComentarioModel comentario) {
+    comentariosMap[comentario.tag] = comentario;
+
+    comentarios.value = [
+      comentario,
+      ...comentarios.value.map(
+        (e) => e.copyWith(
+          respondidoPor: [
+            if (comentario.respondeA.contains(e.tag)) comentario.tag,
+            ...e.respondidoPor,
+          ],
+        ),
+      ),
+    ];
+
+    hilo.value = hilo.value!.copyWith(
+      cantidadComentarios: hilo.value!.cantidadComentarios + 1,
+    );
   }
 
   Future pickGaleriaFile() async {

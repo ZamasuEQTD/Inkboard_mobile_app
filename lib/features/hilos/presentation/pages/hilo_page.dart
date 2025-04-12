@@ -18,6 +18,7 @@ import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/hilos/domain/models/hilo.dart';
 import 'package:inkboard/features/hilos/presentation/logic/controllers/hilo_page_controller.dart';
+import 'package:inkboard/features/hilos/presentation/logic/hilos_hub.dart';
 import 'package:inkboard/features/hilos/presentation/widgets/comentario.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/domain/models/picked_file.dart';
@@ -57,6 +58,28 @@ class _HiloPageState extends State<HiloPage> {
 
     scroll.onBottom(() {});
 
+    HilosHubSignalr? hub;
+
+    controller.hilo.listen((hilo) {
+      if (hilo != null && hub == null) {
+        hub = HilosHubSignalr();
+
+        hub!.init(hilo.id);
+
+        hub!.onComentarioEliminado.listen((id) {
+          controller.eliminarComentario(id);
+
+          destacadosKeys.remove(id);
+
+          comentariosKeys.remove(id);
+        });
+
+        hub!.onComentado.listen((comentario) {
+          controller.agregarComentario(comentario);
+        });
+      }
+    });
+
     controller.destacados.listen((destacados) {
       for (var destacado in destacados) {
         destacadosKeys.putIfAbsent(destacado.id, () => GlobalKey());
@@ -69,17 +92,17 @@ class _HiloPageState extends State<HiloPage> {
       }
     });
 
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        Future.delayed(Duration(milliseconds: 1000), () {
-          String? tag = Get.parameters["tag"];
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Future.delayed(Duration(milliseconds: 1000), () {
+        String? tag = Get.parameters["tag"];
 
-          if (tag != null) {
-            HistorialDeComentariosBottomSheet.show([
-              controller.comentariosMap[tag]!,
-            ]);
-          }
-        });
+        if (tag != null) {
+          HistorialDeComentariosBottomSheet.show([
+            controller.comentariosMap[tag]!,
+          ]);
+        }
       });
+    });
 
     super.initState();
   }
@@ -210,8 +233,8 @@ class _HiloPageState extends State<HiloPage> {
         ),
         Obx(() {
           var comentarios = [
-            ...controller.destacados,
-            ...controller.comentarios,
+            ...controller.destacados.value,
+            ...controller.comentarios.value,
           ];
 
           int items =

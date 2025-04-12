@@ -8,8 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/app/presentation/widgets/snackbar.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/comentarios/domain/icomentarios_repository.dart';
+import 'package:inkboard/features/core/presentation/widgets/revelador_de_contenido.dart';
 import 'package:inkboard/features/hilos/domain/models/comentario_model.dart';
 import 'package:inkboard/features/media/domain/models/media.dart';
 import 'package:inkboard/features/media/presentation/widgets/media_box.dart';
@@ -97,7 +99,18 @@ class ComentarioWidget extends StatelessWidget {
                                             .hilo
                                             .value!
                                             .id,
-                                      ),
+                                      )
+                                      .then((value) {
+                                        value.fold((l) {}, (r) {
+                                          AppSnackbar.success(
+                                            context,
+                                            mensaje:
+                                                comentario.destacado
+                                                    ? "Comentario dejado de destacar"
+                                                    : "Comentario destacado",
+                                          );
+                                        });
+                                      }),
                               leading:
                                   comentario.destacado
                                       ? Icon(Icons.star)
@@ -128,15 +141,27 @@ class ComentarioWidget extends StatelessWidget {
                             SeleccionableItem(
                               titulo: "Eliminar",
                               onTap:
-                                  () => GetIt.I
-                                      .get<IComentariosRepository>()
-                                      .eliminar(
-                                        comentario.id,
-                                        Get.find<HiloPageController>()
-                                            .hilo
-                                            .value!
-                                            .id,
-                                      ),
+                                  () => {
+                                    GetIt.I
+                                        .get<IComentariosRepository>()
+                                        .eliminar(
+                                          comentario.id,
+                                          Get.find<HiloPageController>()
+                                              .hilo
+                                              .value!
+                                              .id,
+                                        )
+                                        .then((value) {
+                                          value.fold((l) {}, (r) {
+                                            Get.back();
+
+                                            AppSnackbar.success(
+                                              context,
+                                              mensaje: "Comentario eliminado",
+                                            );
+                                          });
+                                        }),
+                                  },
                             ),
                           ],
                         ),
@@ -246,6 +271,11 @@ class ComentarioWidget extends StatelessWidget {
   Widget get media => Center(
     child: MediaBox(
       style: DimensionableStyle(radius: BorderRadius.circular(10)),
+      builder:
+          (context, dimensionable) => ReveladorDeContenido(
+            initialValue: comentario.media!.spoiler,
+            child: dimensionable,
+          ),
       media: MediaSource(
         source: MediaSourceType.network,
         model: comentario.media!,
@@ -547,7 +577,7 @@ class AbrirEnlaceExternoBottomSheet extends StatelessWidget {
       onClosing: () {},
       builder:
           (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
