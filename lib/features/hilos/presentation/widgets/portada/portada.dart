@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:inkboard/features/app/presentation/widgets/snackbar.dart';
 import 'package:inkboard/features/auth/presentation/logic/controllers/auth_controller.dart';
 import 'package:inkboard/features/hilos/domain/ihilos_repository.dart';
 import 'package:inkboard/features/hilos/domain/models/portada_model.dart';
@@ -269,6 +270,8 @@ class OpcionesDePortadaBottomSheet extends StatelessWidget {
                             .then(
                               (value) => value.fold((l) {}, (r) {
                                 Get.back();
+
+                                AppSnackbar.success(context, mensaje: "Hilo eliminado");
                               }),
                             );
                       },
