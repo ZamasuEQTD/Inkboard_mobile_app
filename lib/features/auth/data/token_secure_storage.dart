@@ -1,5 +1,4 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get_it/get_it.dart';
 import 'package:inkboard/features/auth/domain/itoken_storage.dart';
 
 class TokenSecureStorage extends ITokenStorage {

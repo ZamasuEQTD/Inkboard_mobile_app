@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 
 class AppSnackbar extends StatelessWidget {
   final Color color;
+  final TextStyle? style;
   final String mensaje;
   final FlashController controller;
   const AppSnackbar({
     super.key,
     required this.controller,
     required this.mensaje,
+    this.style,
     required this.color,
   });
 
@@ -29,7 +31,7 @@ class AppSnackbar extends StatelessWidget {
           ),
           content: Text(
             mensaje,
-            style: TextStyle(fontSize: 14, color: Colors.white),
+            style: TextStyle(fontSize: 14, color: Colors.white).merge(style),
           ),
           controller: controller,
         ),
@@ -38,17 +40,18 @@ class AppSnackbar extends StatelessWidget {
   }
 
   static void success(BuildContext context,{required String mensaje}) => context.showFlash(
-    duration: Duration(seconds: 3),
+    duration: Duration(seconds: 2),
     builder:
         (context, controller) => AppSnackbar(
           controller: controller,
           mensaje: mensaje,
           color: Colors.white,
+          style: TextStyle(color: Colors.black),
         ),
   );
 
   static void error(BuildContext context, {required String mensaje}) => context.showFlash(
-    duration: Duration(seconds: 3),
+    duration: Duration(seconds: 2),
     builder:
         (context, controller) => AppSnackbar(
           controller: controller,
